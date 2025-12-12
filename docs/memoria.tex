@@ -1,0 +1,405 @@
+\documentclass[12pt,a4paper]{article}
+
+% Paquetes
+\usepackage[utf8]{inputenc}
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{xcolor}
+\usepackage{geometry}
+\usepackage{fancyhdr}
+\usepackage{enumitem}
+
+% Configuración de márgenes
+\geometry{
+    a4paper,
+    left=2.5cm,
+    right=2.5cm,
+    top=3cm,
+    bottom=3cm
+}
+
+% Configuración de encabezados
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Parcial 2 - Ingeniería Web}
+\lhead{MiMapa - Aplicación Web}
+\cfoot{\thepage}
+\setlength{\headheight}{15pt}
+
+% Configuración de código
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
+% Sin etiqueta "Listing"
+\renewcommand{\lstlistingname}{}
+
+% Información del documento
+\title{
+    \texorpdfstring{\textbf{Parcial 3 - Ingeniería Web}}{\textbf{Parcial 3 - Ingeniería Web}} \\
+    \Large{MiMapa - Aplicación Web con Mapas, OAuth e Imágenes}
+}
+\author{
+    Nombre: Rubén Oliva Zamora \\
+    Asignatura: Ingeniería Web \\
+    Fecha: 12 de Diciembre de 2024
+}
+\date{}
+
+\begin{document}
+
+\maketitle
+\thispagestyle{empty}
+
+\newpage
+\tableofcontents
+\newpage
+
+% ============================================
+% SECCIÓN 1: DESPLIEGUE EN LA NUBE
+% ============================================
+\section{URL de despliegue en la nube}
+
+La aplicación MiMapa ha sido desplegada en servicios cloud públicos, separando frontend y backend:
+
+\subsection{URLs de acceso}
+
+\begin{itemize}
+    \item \textbf{Frontend (Aplicación principal)}: \url{https://parcial2-roz.vercel.app/}
+    \item \textbf{Backend (API REST)}: \url{https://iweb-parcial-frontend.onrender.com/}
+    \item \textbf{Documentación Swagger}: \url{https://iweb-parcial-frontend.onrender.com/docs}
+\end{itemize}
+
+\subsection{Consideraciones importantes sobre Render}
+
+\textbf{Importante}: Render, en su plan gratuito, suspende automáticamente el servicio tras 15 minutos de inactividad. Esto significa que:
+
+\begin{itemize}
+    \item La primera petición tras el periodo de inactividad puede tardar entre 30-50 segundos en responder
+    \item Se recomienda acceder primero a la URL del backend (\url{https://iweb-parcial-frontend.onrender.com/}) para ``despertar'' el servicio antes de usar la aplicación
+\end{itemize}
+
+% ============================================
+% SECCIÓN 2: CREDENCIALES DE PRUEBA
+% ============================================
+\section{Email de pruebas}
+
+Para las pruebas y validación de la aplicación se ha utilizado la siguiente cuenta de Google:
+
+\begin{itemize}
+    \item \textbf{Email}: \texttt{rubenrubeneitorex@gmail.com}
+\end{itemize}
+
+Este email se utiliza para:
+\begin{itemize}
+    \item Autenticación mediante Google OAuth 2.0
+    \item Asociación de marcadores y ubicaciones en el mapa
+    \item Registro de visitas al mapa de usuario
+\end{itemize}
+
+% ============================================
+% SECCIÓN 3: TECNOLOGÍAS UTILIZADAS
+% ============================================
+\section{Tecnologías utilizadas}
+
+\subsection{Stack tecnológico completo}
+
+\subsubsection{Frontend}
+
+\begin{itemize}
+    \item \textbf{Lenguaje}: TypeScript 5.0+
+    \item \textbf{Framework}: React 18+ con Vite
+    \item \textbf{Estilos}: TailwindCSS (Estilo Neobrutalism Minimalista)
+    \item \textbf{Iconos}: Font Awesome
+    \item \textbf{Mapas}: Leaflet + react-leaflet (OpenStreetMap)
+    \item \textbf{HTTP Client}: Axios
+    \item \textbf{Autenticación}: @react-oauth/google
+    \item \textbf{Arquitectura}: Clean Architecture (Presentation, Application, Domain, Infrastructure)
+\end{itemize}
+
+\subsubsection{Backend}
+
+\begin{itemize}
+    \item \textbf{Lenguaje}: Python 3.11+
+    \item \textbf{Framework Web}: FastAPI
+    \item \textbf{Driver de BD}: Motor (MongoDB async driver)
+    \item \textbf{Validación}: Pydantic v2
+    \item \textbf{Servidor ASGI}: Uvicorn
+    \item \textbf{Autenticación}: google-auth (OAuth 2.0)
+    \item \textbf{Gestión de imágenes}: Cloudinary Python SDK
+    \item \textbf{Geocodificación}: Nominatim (OpenStreetMap)
+    \item \textbf{Arquitectura}: Monolito Modular (API, Services, Repositories, Models, Schemas)
+\end{itemize}
+
+\subsubsection{Base de datos}
+
+\begin{itemize}
+    \item \textbf{Tipo}: NoSQL (Orientada a documentos)
+    \item \textbf{Motor}: MongoDB
+    \item \textbf{Proveedor}: MongoDB Atlas (Cloud)
+    \item \textbf{Plan}: M0 (Free Tier)
+\end{itemize}
+
+\subsubsection{Servicios externos}
+
+\begin{itemize}
+    \item \textbf{Mapas y Geocoding}: OpenStreetMap + Nominatim API
+    \item \textbf{Almacenamiento de imágenes}: Cloudinary
+    \item \textbf{Autenticación}: Google Identity Platform (OAuth 2.0)
+\end{itemize}
+
+\subsubsection{Despliegue en la nube}
+
+\begin{itemize}
+    \item \textbf{Frontend}: Vercel (Plan Free)
+    \item \textbf{Backend}: Render (Plan Free)
+    \item \textbf{Base de datos}: MongoDB Atlas (Plan M0 Free)
+    \item \textbf{Containerización}: Docker + Docker Compose
+\end{itemize}
+
+% ============================================
+% SECCIÓN 4: INSTALACIÓN Y DESPLIEGUE
+% ============================================
+\section{Instrucciones de instalación y despliegue}
+
+\subsection{Requisitos previos}
+
+\begin{itemize}
+    \item Docker y Docker Compose instalados
+    \item Node.js 18+ (opcional, solo si se ejecuta sin Docker)
+    \item Python 3.11+ (opcional, solo si se ejecuta sin Docker)
+    \item Cuenta de MongoDB Atlas configurada
+    \item Cuenta de Cloudinary con credenciales activas
+    \item Proyecto de Google Cloud con OAuth 2.0 configurado
+\end{itemize}
+
+\subsection{Despliegue en local (con Docker)}
+
+\subsubsection{Configuración de variables de entorno}
+
+Crear dos archivos \texttt{.env}, uno para el frontend y otro para el backend.
+
+\textbf{Backend} (\texttt{app/backend/.env}):
+
+\begin{lstlisting}[caption=Variables de entorno del backend]
+# MongoDB Atlas
+MONGO_URI=mongodb+srv://usuario:password@cluster.mongodb.net/
+DATABASE_NAME=exam_db
+
+# Cloudinary
+CLOUDINARY_CLOUD_NAME=tu_cloud_name
+CLOUDINARY_API_KEY=tu_api_key
+CLOUDINARY_API_SECRET=tu_api_secret
+
+# Google OAuth
+GOOGLE_CLIENT_ID=tu_client_id.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=tu_client_secret
+\end{lstlisting}
+
+\textbf{Frontend} (\texttt{app/frontend/.env}):
+
+\begin{lstlisting}[caption=Variables de entorno del frontend]
+# URL del Backend (para local)
+VITE_API_URL=http://localhost:8000/api/v1
+
+# Google OAuth Client ID
+VITE_GOOGLE_CLIENT_ID=tu_client_id.apps.googleusercontent.com
+\end{lstlisting}
+
+\subsubsection{Ejecución con Docker Compose}
+
+\begin{lstlisting}[language=bash, caption=Comandos para ejecucion local]
+# Desde la raiz del proyecto
+
+# Construir las imagenes sin cache
+docker-compose build --no-cache
+
+# Ejecutar los contenedores
+docker-compose up
+
+# O ejecutar en segundo plano
+docker-compose up -d
+
+# Ver logs
+docker-compose logs -f
+
+# Detener los servicios
+docker-compose down
+\end{lstlisting}
+
+\subsubsection{Acceso a la aplicación local}
+
+Una vez ejecutado, la aplicación estará disponible en:
+
+\begin{itemize}
+    \item \textbf{Frontend}: \url{http://localhost:5173}
+    \item \textbf{Backend API}: \url{http://localhost:8000}
+    \item \textbf{Documentación Swagger}: \url{http://localhost:8000/docs}
+\end{itemize}
+
+\subsection{Despliegue en la nube}
+
+El despliegue en la nube se realiza mediante integración continua (CI/CD) conectando el repositorio de Git con Vercel y Render.
+
+\subsubsection{Frontend en Vercel}
+
+\begin{enumerate}
+    \item Conectar el repositorio de GitHub con Vercel
+    \item Configurar las siguientes variables de entorno en el panel de Vercel:
+    \begin{itemize}
+        \item \texttt{VITE\_API\_URL}: URL del backend en Render
+        \item \texttt{VITE\_GOOGLE\_CLIENT\_ID}: Client ID de Google
+    \end{itemize}
+    \item Configurar el directorio raíz como \texttt{app/frontend}
+    \item Vercel detecta automáticamente que es un proyecto Vite
+    \item Cada push a la rama principal despliega automáticamente
+\end{enumerate}
+
+\subsubsection{Backend en Render}
+
+\begin{enumerate}
+    \item Crear un nuevo Web Service en Render
+    \item Conectar el repositorio de GitHub
+    \item Seleccionar \texttt{Docker} como entorno
+    \item Configurar el Dockerfile path: \texttt{app/backend/Dockerfile}
+    \item Configurar las variables de entorno en el panel de Render:
+    \begin{itemize}
+        \item \texttt{MONGO\_URI}
+        \item \texttt{DATABASE\_NAME}
+        \item \texttt{CLOUDINARY\_CLOUD\_NAME}
+        \item \texttt{CLOUDINARY\_API\_KEY}
+        \item \texttt{CLOUDINARY\_API\_SECRET}
+        \item \texttt{GOOGLE\_CLIENT\_ID}
+        \item \texttt{GOOGLE\_CLIENT\_SECRET}
+    \end{itemize}
+    \item Cada push a la rama principal despliega automáticamente
+\end{enumerate}
+
+\subsubsection{MongoDB Atlas}
+
+\begin{enumerate}
+    \item Crear un clúster M0 (gratuito) en MongoDB Atlas
+    \item Configurar acceso desde cualquier IP (\texttt{0.0.0.0/0})
+    \item Crear un usuario de base de datos con permisos de lectura/escritura
+    \item Copiar la Connection String y configurarla en las variables de entorno
+\end{enumerate}
+
+% ============================================
+% SECCIÓN 5: BASE DE DATOS
+% ============================================
+\section{Credenciales de acceso a la base de datos}
+
+\textbf{Base de datos}: MongoDB Atlas
+
+\textbf{Nombre de la base de datos}: \texttt{exam\_db}
+
+\textbf{Colecciones}:
+\begin{itemize}
+    \item \texttt{locations}: Almacena los marcadores del mapa con coordenadas, imágenes y metadata
+    \item \texttt{interactions}: Almacena las visitas realizadas a los mapas de usuarios
+\end{itemize}
+
+\textbf{Credenciales de acceso}: \textcolor{red}{[PENDIENTE - Se proporcionarán al corrector]}
+
+% ============================================
+% SECCIÓN 6: FUNCIONALIDAD Y LIMITACIONES
+% ============================================
+\section{Funcionalidad implementada}
+
+\textcolor{red}{[PENDIENTE - Se completará tras la realización del examen]}
+
+\subsection{Requisitos implementados}
+
+Se implementarán los siguientes requisitos según el enunciado del parcial:
+
+\begin{enumerate}[label=\textbf{\arabic*.}]
+    \item \textbf{Identificación (2 puntos)}: Login y logout mediante OAuth 2.0 con Google
+    \item \textbf{Mapas y geocoding (2 puntos)}: Visualización de mapas con marcadores, añadir ubicaciones mediante geocoding
+    \item \textbf{Imágenes (2 puntos)}: Carga de imágenes a Cloudinary asociadas a marcadores
+    \item \textbf{Visitas (2 puntos)}: Visualización de mapas de otros usuarios y registro de visitas
+    \item \textbf{Despliegue y entrega (2 puntos)}: Despliegue en Vercel y Render con documentación técnica
+\end{enumerate}
+
+\subsection{Arquitectura de la solución}
+
+\subsubsection{Frontend - Clean Architecture}
+
+El frontend sigue una estricta arquitectura limpia con las siguientes capas:
+
+\begin{itemize}
+    \item \textbf{Presentation}: Componentes UI, páginas, contextos (AuthContext, ServerWakeContext)
+    \item \textbf{Application}: Hooks personalizados (use cases) que encapsulan la lógica de negocio
+    \item \textbf{Domain}: Modelos e interfaces (Location, Interaction, User, LocationRepository)
+    \item \textbf{Infrastructure}: Implementaciones concretas (HttpLocationRepository, axios\_client)
+\end{itemize}
+
+\subsubsection{Backend - Monolito Modular}
+
+El backend sigue una arquitectura en capas modulares:
+
+\begin{itemize}
+    \item \textbf{API Layer} (\texttt{api/v1/endpoints/}): Routers y endpoints HTTP
+    \item \textbf{Service Layer} (\texttt{services/}): Lógica de negocio (auth, geocoding, imágenes)
+    \item \textbf{Repository Layer} (\texttt{repositories/}): Acceso a datos de MongoDB
+    \item \textbf{Models} (\texttt{models/}): Esquemas de documentos MongoDB
+    \item \textbf{Schemas} (\texttt{schemas/}): Validación Pydantic v2
+    \item \textbf{Core} (\texttt{core/}): Configuración y conexión a base de datos
+\end{itemize}
+
+\subsection{Características técnicas destacables}
+
+\begin{itemize}
+    \item \textbf{Diseño Responsive}: Adaptado a móvil, tablet y escritorio usando TailwindCSS
+    \item \textbf{Accesibilidad}: Cumple con WCAG 2.1 Level AA (ARIA labels, navegación por teclado, contraste)
+    \item \textbf{Estilo Neobrutalism}: Interfaz minimalista con bordes gruesos, sombras duras y colores vibrantes
+    \item \textbf{Documentación OpenAPI}: Documentación automática generada por FastAPI
+    \item \textbf{Convenciones}: snake\_case para variables/funciones, JSDoc/docstrings en español
+    \item \textbf{Python moderno}: Uso de sintaxis Python 3.11+ (\texttt{str | None}, \texttt{list[str]})
+    \item \textbf{Pydantic v2}: ConfigDict, json\_schema\_extra para ejemplos en OpenAPI
+\end{itemize}
+
+\section{Limitaciones de la solución}
+
+\textcolor{red}{[PENDIENTE - Se completará tras la realización del examen]}
+
+Posibles limitaciones conocidas del sistema:
+
+\begin{itemize}
+    \item \textbf{Plan gratuito de Render}: El backend se suspende tras 15 minutos de inactividad, requiriendo tiempo de "despertar"
+    \item \textbf{Limitaciones de MongoDB Atlas}: Plan M0 con límite de 512 MB de almacenamiento
+    \item \textbf{Limitaciones de Cloudinary}: Plan gratuito con límite de almacenamiento y transformaciones
+    \item \textbf{Rate limiting}: Limitación de peticiones por parte de los servicios gratuitos
+    \item \textbf{Geocoding}: Dependencia de la API pública de Nominatim (OpenStreetMap) que puede tener restricciones
+\end{itemize}
+
+\section{Problemas encontrados durante el desarrollo}
+
+\textcolor{red}{[PENDIENTE - Se completará tras la realización del examen]}
+
+Se documentarán aquí los problemas técnicos encontrados durante el desarrollo y sus soluciones implementadas.
+
+\end{document}

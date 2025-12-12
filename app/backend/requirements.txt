@@ -1,0 +1,15 @@
+fastapi
+uvicorn
+pydantic[email]
+pydantic-settings
+motor
+python-multipart
+python-jose[cryptography]
+passlib[bcrypt]
+httpx
+cloudinary
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+pytest
+email-validator
