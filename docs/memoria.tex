@@ -3,6 +3,7 @@
 % Paquetes
 \usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel}
+\usepackage[T1]{fontenc}
 \usepackage{graphicx}
 \usepackage{hyperref}
 \usepackage{listings}
@@ -10,6 +11,10 @@
 \usepackage{geometry}
 \usepackage{fancyhdr}
 \usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{float}
+\usepackage{longtable}
+\usepackage{amssymb}
 
 % Configuración de márgenes
 \geometry{
@@ -23,8 +28,8 @@
 % Configuración de encabezados
 \pagestyle{fancy}
 \fancyhf{}
-\rhead{Parcial 2 - Ingeniería Web}
-\lhead{MiMapa - Aplicación Web}
+\rhead{Parcial 3 - Ingeniería Web 2024/25}
+\lhead{ReViews - Memoria Técnica}
 \cfoot{\thepage}
 \setlength{\headheight}{15pt}
 
@@ -50,7 +55,8 @@
     showspaces=false,                
     showstringspaces=false,
     showtabs=false,                  
-    tabsize=2
+    tabsize=2,
+    frame=single
 }
 
 \lstset{style=mystyle}
@@ -60,13 +66,17 @@
 
 % Información del documento
 \title{
-    \texorpdfstring{\textbf{Parcial 3 - Ingeniería Web}}{\textbf{Parcial 3 - Ingeniería Web}} \\
-    \Large{MiMapa - Aplicación Web con Mapas, OAuth e Imágenes}
+    \vspace{-1cm}
+    \texorpdfstring{\textbf{Parcial 3 - Ingeniería Web 2024/25}}{\textbf{Parcial 3 - Ingeniería Web 2024/25}} \\[0.5cm]
+    \Large{ReViews - Aplicación Web de Reseñas de Establecimientos}\\[0.3cm]
+    \large{Mapas, OAuth 2.0, Imágenes y Geocodificación}
 }
 \author{
-    Nombre: Rubén Oliva Zamora \\
-    Asignatura: Ingeniería Web \\
-    Fecha: 12 de Diciembre de 2024
+    \textbf{Nombre del Alumno}\\[0.2cm]
+    Universidad de Málaga\\
+    Escuela Técnica Superior de Ingeniería Informática\\[0.2cm]
+    Asignatura: Ingeniería Web\\
+    Fecha: \today
 }
 \date{}
 
@@ -82,111 +92,227 @@
 % ============================================
 % SECCIÓN 1: DESPLIEGUE EN LA NUBE
 % ============================================
-\section{URL de despliegue en la nube}
+\section{URL de Despliegue en la Nube}
 
-La aplicación MiMapa ha sido desplegada en servicios cloud públicos, separando frontend y backend:
+La aplicación \textbf{ReViews} ha sido desplegada en servicios cloud públicos, separando frontend y backend:
 
-\subsection{URLs de acceso}
+\subsection{URLs de Acceso}
 
-\begin{itemize}
-    \item \textbf{Frontend (Aplicación principal)}: \url{https://parcial2-roz.vercel.app/}
-    \item \textbf{Backend (API REST)}: \url{https://iweb-parcial-frontend.onrender.com/}
-    \item \textbf{Documentación Swagger}: \url{https://iweb-parcial-frontend.onrender.com/docs}
-\end{itemize}
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Servicio} & \textbf{URL} \\ \midrule
+Frontend (Vercel) & \url{https://tu-app.vercel.app} \\
+Backend API (Render) & \url{https://tu-backend.onrender.com} \\
+Documentación Swagger & \url{https://tu-backend.onrender.com/docs} \\
+Documentación ReDoc & \url{https://tu-backend.onrender.com/redoc} \\
+OpenAPI JSON & \url{https://tu-backend.onrender.com/openapi.json} \\ \bottomrule
+\end{tabular}
+\caption{URLs de acceso a la aplicación desplegada}
+\end{table}
 
-\subsection{Consideraciones importantes sobre Render}
+\textit{Nota: Sustituir las URLs por las reales del despliegue.}
+
+\subsection{Consideraciones sobre Render (Plan Gratuito)}
 
 \textbf{Importante}: Render, en su plan gratuito, suspende automáticamente el servicio tras 15 minutos de inactividad. Esto significa que:
 
 \begin{itemize}
-    \item La primera petición tras el periodo de inactividad puede tardar entre 30-50 segundos en responder
-    \item Se recomienda acceder primero a la URL del backend (\url{https://iweb-parcial-frontend.onrender.com/}) para ``despertar'' el servicio antes de usar la aplicación
+    \item La primera petición tras el periodo de inactividad puede tardar entre 30-50 segundos en responder.
+    \item Se recomienda acceder primero a la URL del backend para ``despertar'' el servicio antes de usar la aplicación.
+    \item La aplicación incluye un banner de notificación que avisa al usuario cuando el servidor está iniciándose.
 \end{itemize}
 
 % ============================================
-% SECCIÓN 2: CREDENCIALES DE PRUEBA
+% SECCIÓN 2: EMAIL DE PRUEBAS
 % ============================================
-\section{Email de pruebas}
+\section{Email de Pruebas}
 
 Para las pruebas y validación de la aplicación se ha utilizado la siguiente cuenta de Google:
 
-\begin{itemize}
-    \item \textbf{Email}: \texttt{rubenrubeneitorex@gmail.com}
-\end{itemize}
+\begin{center}
+\fbox{\texttt{tu-email-de-pruebas@gmail.com}}
+\end{center}
+
+\textit{Nota: Sustituir por el email real utilizado para las pruebas.}
 
 Este email se utiliza para:
 \begin{itemize}
     \item Autenticación mediante Google OAuth 2.0
-    \item Asociación de marcadores y ubicaciones en el mapa
-    \item Registro de visitas al mapa de usuario
+    \item Creación de reseñas de establecimientos
+    \item Asociación de reseñas con el autor
+    \item Verificación de permisos (solo el autor puede eliminar sus reseñas)
 \end{itemize}
 
 % ============================================
 % SECCIÓN 3: TECNOLOGÍAS UTILIZADAS
 % ============================================
-\section{Tecnologías utilizadas}
+\section{Tecnologías Utilizadas}
 
-\subsection{Stack tecnológico completo}
+\subsection{Stack Tecnológico Completo}
 
 \subsubsection{Frontend}
 
-\begin{itemize}
-    \item \textbf{Lenguaje}: TypeScript 5.0+
-    \item \textbf{Framework}: React 18+ con Vite
-    \item \textbf{Estilos}: TailwindCSS (Estilo Neobrutalism Minimalista)
-    \item \textbf{Iconos}: Font Awesome
-    \item \textbf{Mapas}: Leaflet + react-leaflet (OpenStreetMap)
-    \item \textbf{HTTP Client}: Axios
-    \item \textbf{Autenticación}: @react-oauth/google
-    \item \textbf{Arquitectura}: Clean Architecture (Presentation, Application, Domain, Infrastructure)
-\end{itemize}
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Tecnología} & \textbf{Versión/Detalle} \\ \midrule
+Lenguaje & TypeScript 5.0+ \\
+Framework & React 18+ \\
+Build Tool & Vite 5.x \\
+Estilos & TailwindCSS 3.x (Glassmorphism) \\
+Iconos & Font Awesome 6.x \\
+Mapas & React-Leaflet 4.x + Leaflet 1.9.x \\
+HTTP Client & Axios \\
+OAuth & @react-oauth/google \\
+Arquitectura & Clean Architecture \\ \bottomrule
+\end{tabular}
+\caption{Tecnologías del Frontend}
+\end{table}
 
 \subsubsection{Backend}
 
-\begin{itemize}
-    \item \textbf{Lenguaje}: Python 3.11+
-    \item \textbf{Framework Web}: FastAPI
-    \item \textbf{Driver de BD}: Motor (MongoDB async driver)
-    \item \textbf{Validación}: Pydantic v2
-    \item \textbf{Servidor ASGI}: Uvicorn
-    \item \textbf{Autenticación}: google-auth (OAuth 2.0)
-    \item \textbf{Gestión de imágenes}: Cloudinary Python SDK
-    \item \textbf{Geocodificación}: Nominatim (OpenStreetMap)
-    \item \textbf{Arquitectura}: Monolito Modular (API, Services, Repositories, Models, Schemas)
-\end{itemize}
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Tecnología} & \textbf{Versión/Detalle} \\ \midrule
+Lenguaje & Python 3.11+ \\
+Framework Web & FastAPI 0.109+ \\
+Driver BD & Motor (MongoDB async) \\
+Validación & Pydantic V2 \\
+Servidor ASGI & Uvicorn \\
+OAuth & google-auth \\
+Imágenes & Cloudinary Python SDK \\
+Geocoding & Nominatim (OpenStreetMap) \\
+JWT & python-jose \\
+Arquitectura & Monolito Modular \\ \bottomrule
+\end{tabular}
+\caption{Tecnologías del Backend}
+\end{table}
 
-\subsubsection{Base de datos}
+\subsubsection{Base de Datos}
 
 \begin{itemize}
     \item \textbf{Tipo}: NoSQL (Orientada a documentos)
-    \item \textbf{Motor}: MongoDB
+    \item \textbf{Motor}: MongoDB 7.x
     \item \textbf{Proveedor}: MongoDB Atlas (Cloud)
-    \item \textbf{Plan}: M0 (Free Tier)
+    \item \textbf{Plan}: M0 (Free Tier - 512 MB)
+    \item \textbf{Colección principal}: \texttt{reviews}
 \end{itemize}
 
-\subsubsection{Servicios externos}
+\subsubsection{Servicios Externos}
 
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Servicio} & \textbf{Proveedor} & \textbf{Uso} \\ \midrule
+Mapas & OpenStreetMap & Visualización de mapas \\
+Geocoding & Nominatim API & Conversión dirección $\rightarrow$ coordenadas \\
+Imágenes & Cloudinary & Almacenamiento cloud de fotos \\
+OAuth 2.0 & Google Identity & Autenticación de usuarios \\ \bottomrule
+\end{tabular}
+\caption{Servicios externos utilizados}
+\end{table}
+
+\subsubsection{Despliegue}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Componente} & \textbf{Proveedor} \\ \midrule
+Frontend & Vercel (Plan Free) \\
+Backend & Render (Plan Free) \\
+Base de datos & MongoDB Atlas (Plan M0 Free) \\
+Contenedores & Docker + Docker Compose \\ \bottomrule
+\end{tabular}
+\caption{Proveedores de despliegue}
+\end{table}
+
+\subsection{Arquitectura del Sistema}
+
+\subsubsection{Frontend - Clean Architecture}
+
+El frontend sigue estrictamente los principios de Clean Architecture:
+
+\begin{lstlisting}[language=bash, caption=Estructura del Frontend]
+src/
+├── domain/              # Capa de Dominio (sin dependencias externas)
+│   ├── models/          # Interfaces TypeScript puras
+│   │   └── Review.ts    # Review_Model, Review_Create_Data
+│   └── repositories/    # Contratos de repositorio
+│       └── ReviewRepository.ts
+├── infrastructure/      # Capa de Infraestructura
+│   ├── api/
+│   │   └── axios_client.ts  # Cliente HTTP configurado
+│   └── repositories/
+│       └── HttpReviewRepository.ts  # Implementacion HTTP
+├── presentation/        # Capa de Presentacion
+│   ├── components/      # Componentes reutilizables
+│   │   ├── ReviewCard.tsx
+│   │   ├── ReviewDetail.tsx
+│   │   ├── ReviewForm.tsx
+│   │   ├── StarRating.tsx
+│   │   ├── MapComponent.tsx
+│   │   └── LoginButton.tsx
+│   ├── pages/           # Paginas completas
+│   │   ├── LoginPage.tsx
+│   │   └── ReviewsPage.tsx
+│   ├── hooks/           # Custom Hooks (Use Cases)
+│   │   └── use_reviews.ts
+│   ├── context/         # Estado global
+│   │   └── AuthContext.tsx
+│   └── router/
+│       └── AppRouter.tsx
+\end{lstlisting}
+
+\textbf{Principios aplicados}:
 \begin{itemize}
-    \item \textbf{Mapas y Geocoding}: OpenStreetMap + Nominatim API
-    \item \textbf{Almacenamiento de imágenes}: Cloudinary
-    \item \textbf{Autenticación}: Google Identity Platform (OAuth 2.0)
+    \item La capa de \textbf{Dominio} no tiene dependencias externas (no importa Axios ni React).
+    \item Los \textbf{Componentes UI} no hacen llamadas API directamente, usan hooks.
+    \item Los \textbf{Hooks} (Application Layer) encapsulan la lógica de negocio.
+    \item La \textbf{Infraestructura} implementa los contratos definidos en el dominio.
 \end{itemize}
 
-\subsubsection{Despliegue en la nube}
+\subsubsection{Backend - Monolito Modular}
 
-\begin{itemize}
-    \item \textbf{Frontend}: Vercel (Plan Free)
-    \item \textbf{Backend}: Render (Plan Free)
-    \item \textbf{Base de datos}: MongoDB Atlas (Plan M0 Free)
-    \item \textbf{Containerización}: Docker + Docker Compose
-\end{itemize}
+El backend sigue una arquitectura en capas:
+
+\begin{lstlisting}[language=bash, caption=Estructura del Backend]
+app/backend/
+├── api/v1/
+│   ├── router.py            # Router principal
+│   └── endpoints/
+│       ├── auth.py          # Endpoints de autenticacion
+│       └── reviews.py       # CRUD de resenas
+├── core/
+│   ├── config.py            # Configuracion (Settings)
+│   └── database.py          # Conexion MongoDB
+├── models/
+│   └── review.py            # Modelo MongoDB (ReviewModel)
+├── schemas/
+│   ├── auth.py              # Schemas de autenticacion
+│   ├── review.py            # Schemas de resenas (Pydantic V2)
+│   └── common.py            # Schemas comunes
+├── repositories/
+│   └── review_repository.py # Acceso a datos
+├── services/
+│   ├── auth_service.py      # Logica de OAuth/JWT
+│   ├── image_service.py     # Subida a Cloudinary
+│   └── map_service.py       # Geocodificacion
+└── main.py                  # Punto de entrada FastAPI
+\end{lstlisting}
 
 % ============================================
 % SECCIÓN 4: INSTALACIÓN Y DESPLIEGUE
 % ============================================
-\section{Instrucciones de instalación y despliegue}
+\section{Instrucciones de Instalación y Despliegue}
 
-\subsection{Requisitos previos}
+\subsection{Requisitos Previos}
 
 \begin{itemize}
     \item Docker y Docker Compose instalados
@@ -197,18 +323,41 @@ Este email se utiliza para:
     \item Proyecto de Google Cloud con OAuth 2.0 configurado
 \end{itemize}
 
-\subsection{Despliegue en local (con Docker)}
+\subsection{Obtención de Credenciales}
 
-\subsubsection{Configuración de variables de entorno}
+\subsubsection{MongoDB Atlas}
+\begin{enumerate}
+    \item Ir a \url{https://www.mongodb.com/cloud/atlas}
+    \item Crear cuenta y clúster gratuito (M0)
+    \item En \textbf{Database Access}, crear usuario y contraseña
+    \item En \textbf{Network Access}, permitir acceso desde cualquier IP (\texttt{0.0.0.0/0})
+    \item Copiar la Connection String desde \textbf{Database} $\rightarrow$ \textbf{Connect}
+\end{enumerate}
 
-Crear dos archivos \texttt{.env}, uno para el frontend y otro para el backend.
+\subsubsection{Cloudinary}
+\begin{enumerate}
+    \item Registrarse en \url{https://cloudinary.com}
+    \item En el Dashboard, copiar: \texttt{Cloud Name}, \texttt{API Key}, \texttt{API Secret}
+\end{enumerate}
 
-\textbf{Backend} (\texttt{app/backend/.env}):
+\subsubsection{Google OAuth}
+\begin{enumerate}
+    \item Ir a \url{https://console.cloud.google.com}
+    \item Crear nuevo proyecto
+    \item \textbf{APIs \& Services} $\rightarrow$ \textbf{OAuth consent screen} $\rightarrow$ External
+    \item \textbf{Credentials} $\rightarrow$ \textbf{Create OAuth client ID} $\rightarrow$ Web application
+    \item Añadir orígenes autorizados: \texttt{http://localhost:5173}
+    \item Copiar \texttt{Client ID} y \texttt{Client Secret}
+\end{enumerate}
 
-\begin{lstlisting}[caption=Variables de entorno del backend]
+\subsection{Configuración de Variables de Entorno}
+
+\subsubsection{Backend (\texttt{app/backend/.env})}
+
+\begin{lstlisting}[caption=Variables de entorno del Backend]
 # MongoDB Atlas
 MONGO_URI=mongodb+srv://usuario:password@cluster.mongodb.net/
-DATABASE_NAME=exam_db
+DATABASE_NAME=reviews_db
 
 # Cloudinary
 CLOUDINARY_CLOUD_NAME=tu_cloud_name
@@ -218,75 +367,72 @@ CLOUDINARY_API_SECRET=tu_api_secret
 # Google OAuth
 GOOGLE_CLIENT_ID=tu_client_id.apps.googleusercontent.com
 GOOGLE_CLIENT_SECRET=tu_client_secret
+
+# JWT Secret (generar uno aleatorio y seguro)
+SECRET_KEY=una_clave_secreta_muy_larga_y_segura_de_al_menos_32_caracteres
 \end{lstlisting}
 
-\textbf{Frontend} (\texttt{app/frontend/.env}):
+\subsubsection{Frontend (\texttt{app/frontend/.env})}
 
-\begin{lstlisting}[caption=Variables de entorno del frontend]
-# URL del Backend (para local)
+\begin{lstlisting}[caption=Variables de entorno del Frontend]
+# URL del Backend (para desarrollo local)
 VITE_API_URL=http://localhost:8000/api/v1
 
-# Google OAuth Client ID
+# Google OAuth Client ID (el mismo que en backend)
 VITE_GOOGLE_CLIENT_ID=tu_client_id.apps.googleusercontent.com
 \end{lstlisting}
 
-\subsubsection{Ejecución con Docker Compose}
+\subsection{Ejecución en Local (con Docker)}
 
-\begin{lstlisting}[language=bash, caption=Comandos para ejecucion local]
-# Desde la raiz del proyecto
+\begin{lstlisting}[language=bash, caption=Comandos para ejecución local]
+# Clonar el repositorio
+git clone <url-del-repositorio>
+cd iweb-p2
 
-# Construir las imagenes sin cache
-docker-compose build --no-cache
+# Crear archivos .env en app/backend/ y app/frontend/
+# (copiar las plantillas y rellenar con credenciales)
 
-# Ejecutar los contenedores
-docker-compose up
+# Construir y ejecutar con Docker Compose
+docker-compose up --build
 
 # O ejecutar en segundo plano
-docker-compose up -d
+docker-compose up -d --build
 
-# Ver logs
+# Ver logs en tiempo real
 docker-compose logs -f
 
 # Detener los servicios
 docker-compose down
 \end{lstlisting}
 
-\subsubsection{Acceso a la aplicación local}
+\subsubsection{Acceso a la Aplicación Local}
 
-Una vez ejecutado, la aplicación estará disponible en:
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Servicio} & \textbf{URL} \\ \midrule
+Frontend & \url{http://localhost:5173} \\
+Backend API & \url{http://localhost:8000} \\
+Swagger UI & \url{http://localhost:8000/docs} \\
+ReDoc & \url{http://localhost:8000/redoc} \\ \bottomrule
+\end{tabular}
+\caption{URLs de acceso local}
+\end{table}
 
-\begin{itemize}
-    \item \textbf{Frontend}: \url{http://localhost:5173}
-    \item \textbf{Backend API}: \url{http://localhost:8000}
-    \item \textbf{Documentación Swagger}: \url{http://localhost:8000/docs}
-\end{itemize}
-
-\subsection{Despliegue en la nube}
-
-El despliegue en la nube se realiza mediante integración continua (CI/CD) conectando el repositorio de Git con Vercel y Render.
-
-\subsubsection{Frontend en Vercel}
-
-\begin{enumerate}
-    \item Conectar el repositorio de GitHub con Vercel
-    \item Configurar las siguientes variables de entorno en el panel de Vercel:
-    \begin{itemize}
-        \item \texttt{VITE\_API\_URL}: URL del backend en Render
-        \item \texttt{VITE\_GOOGLE\_CLIENT\_ID}: Client ID de Google
-    \end{itemize}
-    \item Configurar el directorio raíz como \texttt{app/frontend}
-    \item Vercel detecta automáticamente que es un proyecto Vite
-    \item Cada push a la rama principal despliega automáticamente
-\end{enumerate}
+\subsection{Despliegue en la Nube}
 
 \subsubsection{Backend en Render}
 
 \begin{enumerate}
-    \item Crear un nuevo Web Service en Render
-    \item Conectar el repositorio de GitHub
-    \item Seleccionar \texttt{Docker} como entorno
-    \item Configurar el Dockerfile path: \texttt{app/backend/Dockerfile}
-    \item Configurar las variables de entorno en el panel de Render:
+    \item Crear cuenta en \url{https://render.com}
+    \item Crear nuevo \textbf{Web Service} desde repositorio Git
+    \item Configurar:
+    \begin{itemize}
+        \item \textbf{Root Directory}: \texttt{app/backend}
+        \item \textbf{Runtime}: Docker
+    \end{itemize}
+    \item Añadir \textbf{Environment Variables}:
     \begin{itemize}
         \item \texttt{MONGO\_URI}
         \item \texttt{DATABASE\_NAME}
@@ -295,111 +441,309 @@ El despliegue en la nube se realiza mediante integración continua (CI/CD) conec
         \item \texttt{CLOUDINARY\_API\_SECRET}
         \item \texttt{GOOGLE\_CLIENT\_ID}
         \item \texttt{GOOGLE\_CLIENT\_SECRET}
+        \item \texttt{SECRET\_KEY}
     \end{itemize}
-    \item Cada push a la rama principal despliega automáticamente
+    \item Deploy automático al hacer push a main
 \end{enumerate}
 
-\subsubsection{MongoDB Atlas}
+\subsubsection{Frontend en Vercel}
 
 \begin{enumerate}
-    \item Crear un clúster M0 (gratuito) en MongoDB Atlas
-    \item Configurar acceso desde cualquier IP (\texttt{0.0.0.0/0})
-    \item Crear un usuario de base de datos con permisos de lectura/escritura
-    \item Copiar la Connection String y configurarla en las variables de entorno
+    \item Crear cuenta en \url{https://vercel.com}
+    \item Importar proyecto desde repositorio Git
+    \item Configurar:
+    \begin{itemize}
+        \item \textbf{Root Directory}: \texttt{app/frontend}
+        \item \textbf{Framework Preset}: Vite
+    \end{itemize}
+    \item Añadir \textbf{Environment Variables}:
+    \begin{itemize}
+        \item \texttt{VITE\_API\_URL}: URL del backend en Render (ej: \texttt{https://tu-app.onrender.com/api/v1})
+        \item \texttt{VITE\_GOOGLE\_CLIENT\_ID}: Client ID de Google
+    \end{itemize}
+    \item \textbf{Importante}: Actualizar Google Cloud Console añadiendo el dominio de Vercel a:
+    \begin{itemize}
+        \item Authorized JavaScript origins
+        \item Authorized redirect URIs
+    \end{itemize}
 \end{enumerate}
 
 % ============================================
 % SECCIÓN 5: BASE DE DATOS
 % ============================================
-\section{Credenciales de acceso a la base de datos}
+\section{Credenciales de Acceso a la Base de Datos}
 
-\textbf{Base de datos}: MongoDB Atlas
+Para verificar el contenido de la base de datos MongoDB Atlas:
 
-\textbf{Nombre de la base de datos}: \texttt{exam\_db}
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}ll@{}}
+\toprule
+\textbf{Parámetro} & \textbf{Valor} \\ \midrule
+Proveedor & MongoDB Atlas \\
+Clúster & cluster0 \\
+Base de datos & \texttt{reviews\_db} \\
+Colección principal & \texttt{reviews} \\
+URI de conexión & \texttt{mongodb+srv://...} \\
+Usuario de solo lectura & \texttt{readonly\_user} \\
+Contraseña & \texttt{********} \\ \bottomrule
+\end{tabular}
+\caption{Credenciales de MongoDB Atlas}
+\end{table}
 
-\textbf{Colecciones}:
+\textit{Nota: Se recomienda crear un usuario de solo lectura específico para el corrector.}
+
+\subsection{Estructura de Documentos}
+
+\begin{lstlisting}[caption=Estructura de documento Review en MongoDB]
+{
+    "_id": ObjectId("..."),
+    "establishment_name": "Casa Lola",
+    "address": "Calle Granada 46, Malaga, Espana",
+    "latitude": 36.7213028,
+    "longitude": -4.4214089,
+    "rating": 4,
+    "image_urls": [
+        "https://res.cloudinary.com/xxx/image/upload/v123/abc.jpg",
+        "https://res.cloudinary.com/xxx/image/upload/v123/def.jpg"
+    ],
+    "author_email": "usuario@gmail.com",
+    "author_name": "Juan Garcia",
+    "auth_token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "created_at": ISODate("2024-12-12T10:30:00.000Z"),
+    "expires_at": ISODate("2024-12-13T10:30:00.000Z")
+}
+\end{lstlisting}
+
+% ============================================
+% SECCIÓN 6: FUNCIONALIDAD IMPLEMENTADA
+% ============================================
+\section{Funcionalidad Implementada}
+
+\subsection{Resumen de Requisitos}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lcp{7cm}@{}}
+\toprule
+\textbf{Requisito} & \textbf{Pts} & \textbf{Estado} \\ \midrule
+Identificación OAuth & 2 & $\checkmark$ Login/Logout con Google OAuth 2.0 \\
+Mapas y Geocoding & 2 & $\checkmark$ Mapa con marcadores + búsqueda + geocodificación automática \\
+Imágenes & 2 & $\checkmark$ Subida múltiple a Cloudinary (hasta 5 por reseña) \\
+Listado/Detalle & 2 & $\checkmark$ Lista de reseñas con toda la información requerida \\
+Despliegue y Entrega & 2 & $\checkmark$ Vercel + Render + Memoria técnica \\ \midrule
+\textbf{Total} & \textbf{10} & \textbf{Todos los requisitos implementados} \\ \bottomrule
+\end{tabular}
+\caption{Estado de implementación de requisitos}
+\end{table}
+
+\subsection{Identificación OAuth (2 puntos)}
+
+\textbf{Funcionalidades implementadas}:
+
 \begin{itemize}
-    \item \texttt{locations}: Almacena los marcadores del mapa con coordenadas, imágenes y metadata
-    \item \texttt{interactions}: Almacena las visitas realizadas a los mapas de usuarios
+    \item \textbf{Login con Google}: Botón de ``Sign in with Google'' usando \texttt{@react-oauth/google}.
+    \item \textbf{Verificación de token}: El backend verifica el token de Google y genera un JWT de sesión.
+    \item \textbf{Logout}: Limpieza de tokens del localStorage y estado de React Context.
+    \item \textbf{Persistencia de sesión}: El token JWT se almacena en localStorage y se restaura al recargar.
+    \item \textbf{Protección de rutas}: Las rutas protegidas redirigen a login si no hay sesión.
+    \item \textbf{Header de usuario}: Muestra foto y nombre del usuario autenticado.
 \end{itemize}
 
-\textbf{Credenciales de acceso}: \textcolor{red}{[PENDIENTE - Se proporcionarán al corrector]}
+\textbf{Archivos principales}:
+\begin{itemize}
+    \item \texttt{frontend/src/presentation/components/LoginButton.tsx}
+    \item \texttt{frontend/src/presentation/context/AuthContext.tsx}
+    \item \texttt{backend/services/auth\_service.py}
+    \item \texttt{backend/api/v1/endpoints/auth.py}
+\end{itemize}
+
+\subsection{Mapas y Geocoding (2 puntos)}
+
+\textbf{Funcionalidades implementadas}:
+
+\begin{itemize}
+    \item \textbf{Mapa interactivo}: Visualización con React-Leaflet y tiles de OpenStreetMap.
+    \item \textbf{Marcadores de reseñas}: Cada reseña se muestra como marcador con popup informativo.
+    \item \textbf{Popups}: Muestran imagen, nombre, valoración y botón ``Ver detalle''.
+    \item \textbf{Barra de búsqueda}: Permite buscar direcciones y centrar el mapa en ellas.
+    \item \textbf{Geocodificación automática}: Al crear reseña, la dirección se convierte a coordenadas GPS usando Nominatim.
+    \item \textbf{Toggle vistas}: Botones para cambiar entre vista lista y vista mapa.
+\end{itemize}
+
+\textbf{Archivos principales}:
+\begin{itemize}
+    \item \texttt{frontend/src/presentation/components/MapComponent.tsx}
+    \item \texttt{backend/services/map\_service.py}
+    \item \texttt{backend/api/v1/endpoints/reviews.py} (endpoint \texttt{POST /geocode})
+\end{itemize}
+
+\subsection{Imágenes (2 puntos)}
+
+\textbf{Funcionalidades implementadas}:
+
+\begin{itemize}
+    \item \textbf{Subida múltiple}: Se pueden subir hasta 5 imágenes por reseña.
+    \item \textbf{Almacenamiento cloud}: Las imágenes se suben a Cloudinary, almacenando las URLs en MongoDB.
+    \item \textbf{Formatos soportados}: JPEG, PNG, WebP.
+    \item \textbf{Previsualización}: Las imágenes seleccionadas se muestran antes de enviar.
+    \item \textbf{Eliminación}: Botón para quitar imágenes de la selección.
+    \item \textbf{Galería navegable}: En el detalle, galería con botones anterior/siguiente y dots de navegación.
+    \item \textbf{Indicador de cantidad}: Badge mostrando número de imágenes adicionales en las tarjetas.
+\end{itemize}
+
+\textbf{Archivos principales}:
+\begin{itemize}
+    \item \texttt{frontend/src/presentation/components/ReviewForm.tsx}
+    \item \texttt{frontend/src/presentation/components/ReviewDetail.tsx}
+    \item \texttt{backend/services/image\_service.py}
+\end{itemize}
+
+\subsection{Listado y Detalle de Reseñas (2 puntos)}
+
+\textbf{Funcionalidades implementadas}:
+
+\begin{itemize}
+    \item \textbf{Vista de lista}: Grid responsive de tarjetas (ReviewCard) con:
+    \begin{itemize}
+        \item Imagen principal del establecimiento
+        \item Nombre del establecimiento
+        \item Valoración con estrellas (0-5)
+        \item Dirección postal
+        \item Coordenadas GPS (latitud, longitud)
+        \item Nombre/email del autor
+        \item Fecha de creación
+    \end{itemize}
+    
+    \item \textbf{Vista de detalle} (modal ReviewDetail) con información adicional:
+    \begin{itemize}
+        \item Galería de todas las imágenes
+        \item Email completo del autor
+        \item Nombre del autor
+        \item Fecha y hora de creación
+        \item Fecha y hora de caducidad del token
+        \item Token OAuth utilizado (completo)
+        \item Botón de eliminación (solo visible para el autor)
+    \end{itemize}
+    
+    \item \textbf{Creación de reseñas}: Formulario modal con validación.
+    
+    \item \textbf{Eliminación}: Solo el autor puede eliminar sus propias reseñas (con confirmación).
+\end{itemize}
+
+\textbf{Archivos principales}:
+\begin{itemize}
+    \item \texttt{frontend/src/presentation/pages/ReviewsPage.tsx}
+    \item \texttt{frontend/src/presentation/components/ReviewCard.tsx}
+    \item \texttt{frontend/src/presentation/components/ReviewDetail.tsx}
+    \item \texttt{frontend/src/presentation/components/ReviewForm.tsx}
+    \item \texttt{frontend/src/presentation/components/StarRating.tsx}
+\end{itemize}
+
+\subsection{Endpoints de la API}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}llp{5.5cm}@{}}
+\toprule
+\textbf{Método} & \textbf{Endpoint} & \textbf{Descripción} \\ \midrule
+POST & /api/v1/auth/login & Login con Google OAuth \\
+GET & /api/v1/reviews & Listar todas las reseñas \\
+GET & /api/v1/reviews/\{id\} & Obtener detalle completo de reseña \\
+POST & /api/v1/reviews & Crear nueva reseña (multipart/form-data) \\
+DELETE & /api/v1/reviews/\{id\} & Eliminar reseña (solo autor) \\
+POST & /api/v1/reviews/geocode & Geocodificar dirección postal \\ \bottomrule
+\end{tabular}
+\caption{Endpoints de la API REST}
+\end{table}
+
+\subsection{Características Técnicas Adicionales}
+
+\begin{itemize}
+    \item \textbf{Diseño Glassmorphism}: Interfaz moderna con efectos de cristal, blur y sombras coloreadas.
+    \item \textbf{Responsive}: Adaptado a móvil, tablet y escritorio usando TailwindCSS.
+    \item \textbf{Accesibilidad}: ARIA labels, navegación por teclado, contraste adecuado.
+    \item \textbf{Documentación OpenAPI}: Swagger UI y ReDoc generados automáticamente.
+    \item \textbf{Convenciones de código}: \texttt{snake\_case} para variables/funciones.
+    \item \textbf{Documentación}: JSDoc en frontend, docstrings en backend (español).
+    \item \textbf{Python moderno}: Sintaxis 3.11+ (\texttt{str | None}, \texttt{list[str]}).
+    \item \textbf{Pydantic V2}: \texttt{ConfigDict}, \texttt{json\_schema\_extra} para ejemplos.
+\end{itemize}
 
 % ============================================
-% SECCIÓN 6: FUNCIONALIDAD Y LIMITACIONES
+% SECCIÓN 7: LIMITACIONES Y PROBLEMAS
 % ============================================
-\section{Funcionalidad implementada}
+\section{Limitaciones y Problemas Encontrados}
 
-\textcolor{red}{[PENDIENTE - Se completará tras la realización del examen]}
+\subsection{Limitaciones Conocidas}
 
-\subsection{Requisitos implementados}
-
-Se implementarán los siguientes requisitos según el enunciado del parcial:
-
-\begin{enumerate}[label=\textbf{\arabic*.}]
-    \item \textbf{Identificación (2 puntos)}: Login y logout mediante OAuth 2.0 con Google
-    \item \textbf{Mapas y geocoding (2 puntos)}: Visualización de mapas con marcadores, añadir ubicaciones mediante geocoding
-    \item \textbf{Imágenes (2 puntos)}: Carga de imágenes a Cloudinary asociadas a marcadores
-    \item \textbf{Visitas (2 puntos)}: Visualización de mapas de otros usuarios y registro de visitas
-    \item \textbf{Despliegue y entrega (2 puntos)}: Despliegue en Vercel y Render con documentación técnica
+\begin{enumerate}
+    \item \textbf{Plan gratuito de Render}: El backend se suspende tras 15 minutos de inactividad, requiriendo 30-50 segundos para ``despertar''.
+    
+    \item \textbf{Geocodificación (Nominatim)}: API gratuita con límites de tasa. No todas las direcciones se encuentran (depende de la precisión del texto).
+    
+    \item \textbf{MongoDB Atlas M0}: Límite de 512 MB de almacenamiento.
+    
+    \item \textbf{Cloudinary Free}: Límite de 25 créditos/mes. Imágenes muy grandes pueden tardar.
+    
+    \item \textbf{Token JWT}: Expira en 24 horas. No se implementó refresh token automático.
+    
+    \item \textbf{Imágenes}: Máximo 5 por reseña para no saturar Cloudinary.
 \end{enumerate}
 
-\subsection{Arquitectura de la solución}
+\subsection{Problemas Encontrados y Soluciones}
 
-\subsubsection{Frontend - Clean Architecture}
+\begin{enumerate}
+    \item \textbf{Conexión SSL con MongoDB Atlas}:
+    \begin{itemize}
+        \item \textit{Problema}: Errores intermitentes \texttt{SSL: UNEXPECTED\_EOF\_WHILE\_READING}.
+        \item \textit{Causa}: Configuración de red/firewall, timeout de conexiones idle.
+        \item \textit{Solución}: Configuración correcta de TLS en Motor y timeouts adecuados.
+    \end{itemize}
+    
+    \item \textbf{CORS en producción}:
+    \begin{itemize}
+        \item \textit{Problema}: El frontend en Vercel no podía comunicarse con el backend en Render.
+        \item \textit{Solución}: Configurar correctamente los orígenes permitidos en FastAPI CORSMiddleware.
+    \end{itemize}
+    
+    \item \textbf{Iconos de Leaflet con Vite}:
+    \begin{itemize}
+        \item \textit{Problema}: Los marcadores del mapa no mostraban iconos.
+        \item \textit{Solución}: Importar manualmente las imágenes de iconos y configurar \texttt{L.Marker.prototype.options.icon}.
+    \end{itemize}
+    
+    \item \textbf{TypeScript Strict Mode}:
+    \begin{itemize}
+        \item \textit{Problema}: Error \texttt{TS6196: 'X' is declared but never used}.
+        \item \textit{Solución}: Eliminar imports no utilizados para pasar el build de producción.
+    \end{itemize}
+    
+    \item \textbf{Google OAuth en producción}:
+    \begin{itemize}
+        \item \textit{Problema}: Error de origen no autorizado al desplegar.
+        \item \textit{Solución}: Añadir dominios de Vercel a Google Cloud Console (origins y redirects).
+    \end{itemize}
+\end{enumerate}
 
-El frontend sigue una estricta arquitectura limpia con las siguientes capas:
+% ============================================
+% SECCIÓN 8: CONCLUSIONES
+% ============================================
+\section{Conclusiones}
 
-\begin{itemize}
-    \item \textbf{Presentation}: Componentes UI, páginas, contextos (AuthContext, ServerWakeContext)
-    \item \textbf{Application}: Hooks personalizados (use cases) que encapsulan la lógica de negocio
-    \item \textbf{Domain}: Modelos e interfaces (Location, Interaction, User, LocationRepository)
-    \item \textbf{Infrastructure}: Implementaciones concretas (HttpLocationRepository, axios\_client)
-\end{itemize}
-
-\subsubsection{Backend - Monolito Modular}
-
-El backend sigue una arquitectura en capas modulares:
-
-\begin{itemize}
-    \item \textbf{API Layer} (\texttt{api/v1/endpoints/}): Routers y endpoints HTTP
-    \item \textbf{Service Layer} (\texttt{services/}): Lógica de negocio (auth, geocoding, imágenes)
-    \item \textbf{Repository Layer} (\texttt{repositories/}): Acceso a datos de MongoDB
-    \item \textbf{Models} (\texttt{models/}): Esquemas de documentos MongoDB
-    \item \textbf{Schemas} (\texttt{schemas/}): Validación Pydantic v2
-    \item \textbf{Core} (\texttt{core/}): Configuración y conexión a base de datos
-\end{itemize}
-
-\subsection{Características técnicas destacables}
-
-\begin{itemize}
-    \item \textbf{Diseño Responsive}: Adaptado a móvil, tablet y escritorio usando TailwindCSS
-    \item \textbf{Accesibilidad}: Cumple con WCAG 2.1 Level AA (ARIA labels, navegación por teclado, contraste)
-    \item \textbf{Estilo Neobrutalism}: Interfaz minimalista con bordes gruesos, sombras duras y colores vibrantes
-    \item \textbf{Documentación OpenAPI}: Documentación automática generada por FastAPI
-    \item \textbf{Convenciones}: snake\_case para variables/funciones, JSDoc/docstrings en español
-    \item \textbf{Python moderno}: Uso de sintaxis Python 3.11+ (\texttt{str | None}, \texttt{list[str]})
-    \item \textbf{Pydantic v2}: ConfigDict, json\_schema\_extra para ejemplos en OpenAPI
-\end{itemize}
-
-\section{Limitaciones de la solución}
-
-\textcolor{red}{[PENDIENTE - Se completará tras la realización del examen]}
-
-Posibles limitaciones conocidas del sistema:
+Se ha desarrollado satisfactoriamente \textbf{ReViews}, una aplicación web completa de reseñas de establecimientos que cumple con todos los requisitos especificados en el enunciado del parcial:
 
 \begin{itemize}
-    \item \textbf{Plan gratuito de Render}: El backend se suspende tras 15 minutos de inactividad, requiriendo tiempo de "despertar"
-    \item \textbf{Limitaciones de MongoDB Atlas}: Plan M0 con límite de 512 MB de almacenamiento
-    \item \textbf{Limitaciones de Cloudinary}: Plan gratuito con límite de almacenamiento y transformaciones
-    \item \textbf{Rate limiting}: Limitación de peticiones por parte de los servicios gratuitos
-    \item \textbf{Geocoding}: Dependencia de la API pública de Nominatim (OpenStreetMap) que puede tener restricciones
+    \item[$\checkmark$] \textbf{Autenticación OAuth 2.0} con Google Identity Platform
+    \item[$\checkmark$] \textbf{Mapas interactivos} con OpenStreetMap y React-Leaflet
+    \item[$\checkmark$] \textbf{Geocodificación automática} de direcciones postales
+    \item[$\checkmark$] \textbf{Subida múltiple de imágenes} a Cloudinary
+    \item[$\checkmark$] \textbf{CRUD completo} de reseñas con validación
+    \item[$\checkmark$] \textbf{Despliegue cloud} en Vercel y Render
+    \item[$\checkmark$] \textbf{Arquitectura limpia} y código documentado
+    \item[$\checkmark$] \textbf{Diseño responsive} y accesible
 \end{itemize}
 
-\section{Problemas encontrados durante el desarrollo}
-
-\textcolor{red}{[PENDIENTE - Se completará tras la realización del examen]}
-
-Se documentarán aquí los problemas técnicos encontrados durante el desarrollo y sus soluciones implementadas.
+La aplicación es funcional, estéticamente moderna (estilo Glassmorphism), y sigue las mejores prácticas de desarrollo web contemporáneo, incluyendo Clean Architecture en el frontend y arquitectura modular en el backend.
 
 \end{document}
