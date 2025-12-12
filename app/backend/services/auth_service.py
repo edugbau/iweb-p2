@@ -5,10 +5,17 @@ from datetime import datetime, timedelta
 from jose import jwt, JWTError
 from fastapi import HTTPException, status
 
+
 class AuthService:
+    """
+    Servicio de autenticación con Google OAuth y JWT.
+    Maneja la verificación de tokens de Google y la generación de tokens de sesión.
+    """
+    
     def verify_google_token(self, token: str) -> dict | None:
         """
         Verifica un token de ID de Google.
+        
         :param token: El token JWT recibido del frontend.
         :return: Diccionario con info del usuario (email, name, picture) o None.
         """
@@ -19,10 +26,6 @@ class AuthService:
                 settings.GOOGLE_CLIENT_ID
             )
             
-            # Verificación adicional de emisor si es necesario
-            # if id_info['iss'] not in ['accounts.google.com', 'https://accounts.google.com']:
-            #     raise ValueError('Wrong issuer.')
-
             return {
                 "email": id_info.get("email"),
                 "name": id_info.get("name"),
@@ -36,24 +39,28 @@ class AuthService:
     def create_access_token(self, data: dict, expires_delta: timedelta | None = None) -> str:
         """
         Genera un token JWT de acceso.
+        
+        :param data: Datos a incluir en el token (email como 'sub', name opcional).
+        :param expires_delta: Tiempo de expiración opcional.
+        :return: Token JWT codificado.
         """
         to_encode = data.copy()
         if expires_delta:
             expire = datetime.utcnow() + expires_delta
         else:
-            expire = datetime.utcnow() + timedelta(minutes=1440) # 24 horas por defecto
+            expire = datetime.utcnow() + timedelta(minutes=1440)  # 24 horas por defecto
         
         to_encode.update({"exp": expire})
         
-        # La SECRET_KEY viene de settings (configurada en .env o con valor por defecto)
         encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm="HS256")
         return encoded_jwt
 
     def verify_access_token(self, token: str) -> dict | None:
         """
         Verifica un token JWT propio del backend.
+        
         :param token: Token JWT a verificar.
-        :return: Payload del token (con 'sub' = email) o None si es inválido.
+        :return: Payload del token (con 'sub' = email, 'name' opcional) o None si es inválido.
         """
         try:
             payload = jwt.decode(token, settings.SECRET_KEY, algorithms=["HS256"])
@@ -108,3 +115,39 @@ class AuthService:
             )
         
         return user_email
+    
+    def get_current_user_info(self, authorization_header: str | None) -> dict:
+        """
+        Extrae y valida la información completa del usuario desde el header de autorización.
+        
+        :param authorization_header: Header Authorization con formato "Bearer <token>"
+        :return: Diccionario con email y nombre del usuario autenticado
+        :raises HTTPException: Si el token es inválido
+        """
+        if not authorization_header:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token de autorización requerido",
+            )
+        
+        try:
+            scheme, token = authorization_header.split()
+            if scheme.lower() != "bearer":
+                raise ValueError("Esquema inválido")
+        except ValueError:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Formato de token inválido",
+            )
+        
+        payload = self.verify_access_token(token)
+        if not payload:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Token inválido o expirado",
+            )
+        
+        return {
+            "email": payload.get("sub"),
+            "name": payload.get("name", payload.get("sub", "").split("@")[0])
+        }

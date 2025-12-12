@@ -6,8 +6,23 @@ from core.database import db
 
 # Configuración de metadatos para OpenAPI
 app = FastAPI(
-    title=settings.API_NAME,
-    description="API REST para gestión de ubicaciones en mapas con autenticación OAuth, geocodificación y almacenamiento de imágenes.",
+    title="ReViews API",
+    description="""
+    API REST para la aplicación ReViews - Sistema de reseñas de establecimientos.
+    
+    ## Funcionalidades principales:
+    
+    * **Autenticación OAuth 2.0** con Google
+    * **Gestión de reseñas** con nombre, dirección, valoración e imágenes
+    * **Geocodificación automática** con OpenStreetMap/Nominatim
+    * **Almacenamiento de imágenes** en Cloudinary
+    * **Información de tokens OAuth** para auditoría
+    
+    ## Requisitos de autenticación:
+    
+    Todas las operaciones de escritura requieren un token JWT válido
+    en el header `Authorization: Bearer <token>`.
+    """,
     version="1.0.0",
     openapi_tags=[
         {
@@ -15,8 +30,12 @@ app = FastAPI(
             "description": "Autenticación y autorización con Google OAuth 2.0"
         },
         {
+            "name": "Reviews",
+            "description": "Gestión de reseñas de establecimientos: crear, listar, ver detalle y eliminar"
+        },
+        {
             "name": "Locations",
-            "description": "Gestión de ubicaciones en el mapa"
+            "description": "Gestión de ubicaciones en el mapa (legacy)"
         },
         {
             "name": "Interactions",
@@ -43,7 +62,7 @@ async def startup_event():
     """
     db.connect()
     print("✅ Conexión a MongoDB establecida")
-    print("🚀 API iniciada correctamente")
+    print("🚀 ReViews API iniciada correctamente")
 
 
 @app.on_event("shutdown")

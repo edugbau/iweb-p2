@@ -5,7 +5,7 @@ from schemas.common import ErrorResponse
 from typing import Annotated
 
 router = APIRouter()
-# auth_service = AuthService() # ELIMINADO
+
 
 async def get_current_user(
     authorization: Annotated[str | None, Header()] = None,
@@ -21,6 +21,7 @@ async def get_current_user(
     :raises HTTPException: Si el token es inválido o no está presente
     """
     return auth_service.get_current_user_email(authorization)
+
 
 @router.post(
     "/login",
@@ -41,7 +42,7 @@ async def get_current_user(
 )
 async def login(
     request: LoginRequest = Body(...),
-    auth_service: AuthService = Depends() # INYECTADO
+    auth_service: AuthService = Depends()
 ):
     """
     Autentica un usuario con Google OAuth y devuelve un token JWT de sesión.
@@ -59,9 +60,14 @@ async def login(
             detail="Token de Google inválido o expirado"
         )
 
-    # 2. Generar JWT de sesión (Stateless - No guardamos en BD Users)
-    # El 'sub' del token será el email, que usaremos como ID de usuario
-    access_token = auth_service.create_access_token(data={"sub": user_info['email']})
+    # 2. Generar JWT de sesión incluyendo el nombre del usuario
+    # El 'sub' del token será el email, y 'name' el nombre completo
+    access_token = auth_service.create_access_token(
+        data={
+            "sub": user_info['email'],
+            "name": user_info['name']
+        }
+    )
     
     return LoginResponse(
         access_token=access_token,
