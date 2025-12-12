@@ -1,0 +1,13 @@
+fastapi
+uvicorn
+motor
+odmantic
+pydantic-settings
+python-multipart
+httpx
+google-auth-oauthlib
+google-auth-httplib2
+requests
+python-jose[cryptography]
+passlib[bcrypt]
+cloudinary
