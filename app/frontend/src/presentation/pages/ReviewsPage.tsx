@@ -29,6 +29,7 @@ export const ReviewsPage = () => {
         error, 
         create_review, 
         delete_review,
+        get_review_by_id,
         geocode_address 
     } = use_reviews();
     
@@ -36,6 +37,31 @@ export const ReviewsPage = () => {
     const [selected_review, set_selected_review] = useState<Review_Model | null>(null);
     const [view_mode, set_view_mode] = useState<'list' | 'map'>('list');
     const [is_creating, set_is_creating] = useState(false);
+    const [is_loading_detail, set_is_loading_detail] = useState(false);
+
+    /**
+     * Maneja la selección de una reseña para ver su detalle completo.
+     * Obtiene la información completa incluyendo el token OAuth.
+     * @param review Reseña seleccionada del listado.
+     */
+    const handle_select_review = async (review: Review_Model) => {
+        set_is_loading_detail(true);
+        try {
+            // Obtener el detalle completo de la reseña (incluyendo token)
+            const full_review = await get_review_by_id(review.id);
+            if (full_review) {
+                set_selected_review(full_review);
+            } else {
+                // Si falla, mostrar al menos la info del listado
+                set_selected_review(review);
+            }
+        } catch (err) {
+            console.error('Error loading review detail:', err);
+            set_selected_review(review);
+        } finally {
+            set_is_loading_detail(false);
+        }
+    };
 
     /**
      * Maneja la creación de una nueva reseña.
@@ -199,7 +225,7 @@ export const ReviewsPage = () => {
                                         <ReviewCard
                                             key={review.id}
                                             review={review}
-                                            on_click={() => set_selected_review(review)}
+                                            on_click={() => handle_select_review(review)}
                                         />
                                     ))
                                 )}
@@ -211,7 +237,7 @@ export const ReviewsPage = () => {
                             <div className="h-[calc(100vh-220px)] min-h-[500px] rounded-3xl overflow-hidden border border-white/40 shadow-xl shadow-indigo-500/10 bg-white/60 backdrop-blur-lg">
                                 <MapComponent
                                     reviews={reviews}
-                                    on_review_select={set_selected_review}
+                                    on_review_select={handle_select_review}
                                     on_geocode={geocode_address}
                                 />
                             </div>
@@ -227,6 +253,16 @@ export const ReviewsPage = () => {
                 on_submit={handle_create_review}
                 is_loading={is_creating}
             />
+
+            {/* Loading Detail Indicator */}
+            {is_loading_detail && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm">
+                    <div className="bg-white/90 backdrop-blur-xl rounded-2xl p-6 shadow-xl flex items-center gap-3">
+                        <FontAwesomeIcon icon={faSpinner} className="animate-spin text-2xl text-indigo-500" />
+                        <span className="font-semibold text-slate-700">Cargando detalle...</span>
+                    </div>
+                </div>
+            )}
 
             {/* Review Detail Modal */}
             <ReviewDetail
