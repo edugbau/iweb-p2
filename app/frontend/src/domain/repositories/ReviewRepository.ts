@@ -1,4 +1,4 @@
-import type { Review_Model, Review_Create_Data, Geocoding_Result } from "../models/Review";
+import type { Review_Model, Geocoding_Result } from "../models/Review";
 
 /**
  * Interfaz del repositorio de reseñas.
