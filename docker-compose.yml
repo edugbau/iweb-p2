@@ -1,0 +1,47 @@
+# Docker Compose para desarrollo local
+# Ejecutar con: docker-compose up --build
+
+services:
+  # Backend FastAPI
+  backend:
+    build: ./backend
+    container_name: iweb-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - MONGO_URI=${MONGO_URI}
+      - DATABASE_NAME=${DATABASE_NAME}
+      - CLOUDINARY_CLOUD_NAME=${CLOUDINARY_CLOUD_NAME}
+      - CLOUDINARY_API_KEY=${CLOUDINARY_API_KEY}
+      - CLOUDINARY_API_SECRET=${CLOUDINARY_API_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - FRONTEND_URL=http://localhost:5173
+      - BACKEND_URL=http://localhost:8000
+    volumes:
+      - ./backend:/app
+    networks:
+      - iweb-network
+    restart: unless-stopped
+
+  # Frontend React + Vite
+  frontend:
+    build: ./frontend
+    container_name: iweb-frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8000
+    volumes:
+      - ./frontend/src:/app/src
+      - ./frontend/public:/app/public
+      - ./frontend/index.html:/app/index.html
+    networks:
+      - iweb-network
+    depends_on:
+      - backend
+    restart: unless-stopped
+
+networks:
+  iweb-network:
+    driver: bridge
