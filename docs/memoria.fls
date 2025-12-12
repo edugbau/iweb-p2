@@ -150,8 +150,14 @@ INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\tex\latex\epstopdf-pkg\epst
 INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\tex\latex\00miktex\epstopdf-sys.cfg
 INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\tex\latex\00miktex\epstopdf-sys.cfg
 INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\tex\latex\00miktex\epstopdf-sys.cfg
-OUTPUT memoria.out
+INPUT .\memoria.out
+INPUT .\memoria.out
+INPUT memoria.out
+INPUT memoria.out
 OUTPUT memoria.pdf
+INPUT .\memoria.out
+INPUT .\memoria.out
+OUTPUT memoria.out
 INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecrm2074.tfm
 INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecbx2074.tfm
 INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecrm1728.tfm
@@ -176,7 +182,9 @@ INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\fonts\tfm\public\amsfonts\s
 INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecbx1440.tfm
 INPUT C:\Users\Eduardo\AppData\Local\MiKTeX\fonts\map\pdftex\pdftex.map
 INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecbx1728.tfm
-OUTPUT memoria.toc
+INPUT .\memoria.toc
+INPUT .\memoria.toc
+INPUT memoria.toc
 INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecbx1200.tfm
 INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmr8.tfm
 INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\fonts\tfm\public\cm\cmr6.tfm
@@ -199,6 +207,7 @@ INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\tex\latex\base\t1cmtt.fd
 INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\tex\latex\base\t1cmtt.fd
 INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\tex\latex\base\t1cmtt.fd
 INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ectt1200.tfm
+OUTPUT memoria.toc
 INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecti1200.tfm
 INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\tex\latex\listings\lstlang1.sty
 INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\tex\latex\listings\lstlang1.sty
@@ -210,6 +219,9 @@ INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ectt1
 INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecrm1000.tfm
 INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\ecrm0600.tfm
 INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\fonts\tfm\jknappen\ec\tcrm1200.tfm
+INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\tex\latex\listings\lstlang1.sty
+INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\tex\latex\listings\lstlang1.sty
+INPUT C:\Users\Eduardo\AppData\Local\Programs\MiKTeX\tex\latex\listings\lstlang1.sty
 INPUT memoria.aux
 INPUT .\memoria.out
 INPUT .\memoria.out

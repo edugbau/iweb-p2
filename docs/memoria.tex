@@ -56,7 +56,14 @@
     showstringspaces=false,
     showtabs=false,                  
     tabsize=2,
-    frame=single
+    frame=single,
+    extendedchars=true,
+    inputencoding=utf8,
+    literate={á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+             {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+             {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {ü}{{\"u}}1 {Ü}{{\"U}}1
+             {€}{{\texteuro}}1 {£}{{\pounds}}1
+             {→}{{$\rightarrow$}}1 {←}{{$\leftarrow$}}1
 }
 
 \lstset{style=mystyle}
@@ -211,7 +218,7 @@ Arquitectura & Monolito Modular \\ \bottomrule
 \toprule
 \textbf{Servicio} & \textbf{Proveedor} & \textbf{Uso} \\ \midrule
 Mapas & OpenStreetMap & Visualización de mapas \\
-Geocoding & Nominatim API & Conversión dirección $\rightarrow$ coordenadas \\
+Geocoding & Nominatim + Photon + Geocode.maps.co & Conversión dirección $\rightarrow$ coordenadas \\
 Imágenes & Cloudinary & Almacenamiento cloud de fotos \\
 OAuth 2.0 & Google Identity & Autenticación de usuarios \\ \bottomrule
 \end{tabular}
@@ -241,33 +248,33 @@ El frontend sigue estrictamente los principios de Clean Architecture:
 
 \begin{lstlisting}[language=bash, caption=Estructura del Frontend]
 src/
-├── domain/              # Capa de Dominio (sin dependencias externas)
-│   ├── models/          # Interfaces TypeScript puras
-│   │   └── Review.ts    # Review_Model, Review_Create_Data
-│   └── repositories/    # Contratos de repositorio
-│       └── ReviewRepository.ts
-├── infrastructure/      # Capa de Infraestructura
-│   ├── api/
-│   │   └── axios_client.ts  # Cliente HTTP configurado
-│   └── repositories/
-│       └── HttpReviewRepository.ts  # Implementacion HTTP
-├── presentation/        # Capa de Presentacion
-│   ├── components/      # Componentes reutilizables
-│   │   ├── ReviewCard.tsx
-│   │   ├── ReviewDetail.tsx
-│   │   ├── ReviewForm.tsx
-│   │   ├── StarRating.tsx
-│   │   ├── MapComponent.tsx
-│   │   └── LoginButton.tsx
-│   ├── pages/           # Paginas completas
-│   │   ├── LoginPage.tsx
-│   │   └── ReviewsPage.tsx
-│   ├── hooks/           # Custom Hooks (Use Cases)
-│   │   └── use_reviews.ts
-│   ├── context/         # Estado global
-│   │   └── AuthContext.tsx
-│   └── router/
-│       └── AppRouter.tsx
++-- domain/              # Capa de Dominio (sin dependencias externas)
+|   +-- models/          # Interfaces TypeScript puras
+|   |   +-- Review.ts    # Review_Model, Review_Create_Data
+|   +-- repositories/    # Contratos de repositorio
+|       +-- ReviewRepository.ts
++-- infrastructure/      # Capa de Infraestructura
+|   +-- api/
+|   |   +-- axios_client.ts  # Cliente HTTP configurado
+|   +-- repositories/
+|       +-- HttpReviewRepository.ts  # Implementacion HTTP
++-- presentation/        # Capa de Presentacion
+|   +-- components/      # Componentes reutilizables
+|   |   +-- ReviewCard.tsx
+|   |   +-- ReviewDetail.tsx
+|   |   +-- ReviewForm.tsx
+|   |   +-- StarRating.tsx
+|   |   +-- MapComponent.tsx
+|   |   +-- LoginButton.tsx
+|   +-- pages/           # Paginas completas
+|   |   +-- LoginPage.tsx
+|   |   +-- ReviewsPage.tsx
+|   +-- hooks/           # Custom Hooks (Use Cases)
+|   |   +-- use_reviews.ts
+|   +-- context/         # Estado global
+|   |   +-- AuthContext.tsx
+|   +-- router/
+|       +-- AppRouter.tsx
 \end{lstlisting}
 
 \textbf{Principios aplicados}:
@@ -284,27 +291,27 @@ El backend sigue una arquitectura en capas:
 
 \begin{lstlisting}[language=bash, caption=Estructura del Backend]
 app/backend/
-├── api/v1/
-│   ├── router.py            # Router principal
-│   └── endpoints/
-│       ├── auth.py          # Endpoints de autenticacion
-│       └── reviews.py       # CRUD de resenas
-├── core/
-│   ├── config.py            # Configuracion (Settings)
-│   └── database.py          # Conexion MongoDB
-├── models/
-│   └── review.py            # Modelo MongoDB (ReviewModel)
-├── schemas/
-│   ├── auth.py              # Schemas de autenticacion
-│   ├── review.py            # Schemas de resenas (Pydantic V2)
-│   └── common.py            # Schemas comunes
-├── repositories/
-│   └── review_repository.py # Acceso a datos
-├── services/
-│   ├── auth_service.py      # Logica de OAuth/JWT
-│   ├── image_service.py     # Subida a Cloudinary
-│   └── map_service.py       # Geocodificacion
-└── main.py                  # Punto de entrada FastAPI
++-- api/v1/
+|   +-- router.py            # Router principal
+|   +-- endpoints/
+|       +-- auth.py          # Endpoints de autenticacion
+|       +-- reviews.py       # CRUD de resenas
++-- core/
+|   +-- config.py            # Configuracion (Settings)
+|   +-- database.py          # Conexion MongoDB
++-- models/
+|   +-- review.py            # Modelo MongoDB (ReviewModel)
++-- schemas/
+|   +-- auth.py              # Schemas de autenticacion
+|   +-- review.py            # Schemas de resenas (Pydantic V2)
+|   +-- common.py            # Schemas comunes
++-- repositories/
+|   +-- review_repository.py # Acceso a datos
++-- services/
+|   +-- auth_service.py      # Logica de OAuth/JWT
+|   +-- image_service.py     # Subida a Cloudinary
+|   +-- map_service.py       # Geocodificacion
++-- main.py                  # Punto de entrada FastAPI
 \end{lstlisting}
 
 % ============================================
@@ -384,7 +391,7 @@ VITE_GOOGLE_CLIENT_ID=tu_client_id.apps.googleusercontent.com
 
 \subsection{Ejecución en Local (con Docker)}
 
-\begin{lstlisting}[language=bash, caption=Comandos para ejecución local]
+\begin{lstlisting}[language=bash, caption=Comandos para ejecucion local]
 # Clonar el repositorio
 git clone <url-del-repositorio>
 cd iweb-p2
@@ -469,7 +476,69 @@ ReDoc & \url{http://localhost:8000/redoc} \\ \bottomrule
 \end{enumerate}
 
 % ============================================
-% SECCIÓN 5: BASE DE DATOS
+% SECCIÓN 5: CONFIGURACIÓN DEL PROYECTO
+% ============================================
+\section{Configuración del Proyecto}
+
+A continuación se detallan las variables de entorno utilizadas en el proyecto para su correcto funcionamiento.
+
+\subsection{Variables de Entorno del Backend}
+
+El archivo \texttt{app/backend/.env} contiene la siguiente configuración:
+
+\begin{lstlisting}[caption=Configuracion del Backend (.env)]
+# Configuracion del Servidor
+MONGO_URI=mongodb+srv://eduardo:eduardo@cluster0.n63md1g.mongodb.net/?appName=Cluster0
+DATABASE_NAME=plantilla
+API_NAME=IWEB Exam API
+
+# Cloudinary (Imagenes)
+CLOUDINARY_CLOUD_NAME=dhvhzdfwh
+CLOUDINARY_API_KEY=682229474789636
+CLOUDINARY_API_SECRET=4XDfe2qeDc63g-w6sh87OY4v96U
+
+# Google OAuth (Backend verifica el token)
+GOOGLE_CLIENT_ID=1024296056000-rk7006r9ch3fjn85ou47tebu0fla9f8q.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
+
+# JWT
+SECRET_KEY=secret_key_placeholder_change_me
+
+# Desarrollo local
+ALLOWED_ORIGINS=http://localhost:5173
+\end{lstlisting}
+
+\subsection{Variables de Entorno del Frontend}
+
+El archivo \texttt{app/frontend/.env} contiene la siguiente configuración:
+
+\begin{lstlisting}[caption=Configuracion del Frontend (.env)]
+# URL del Backend (Para Axios)
+VITE_API_URL=http://localhost:8000/api/v1
+
+# Google OAuth (Para el boton de login en React)
+VITE_GOOGLE_CLIENT_ID=1024296056000-rk7006r9ch3fjn85ou47tebu0fla9f8q.apps.googleusercontent.com
+\end{lstlisting}
+
+\subsection{Resumen de Credenciales}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}lll@{}}
+\toprule
+\textbf{Servicio} & \textbf{Parámetro} & \textbf{Valor} \\ \midrule
+MongoDB Atlas & Usuario & eduardo \\
+MongoDB Atlas & Clúster & cluster0.n63md1g.mongodb.net \\
+MongoDB Atlas & Base de datos & plantilla \\
+Cloudinary & Cloud Name & dhvhzdfwh \\
+Cloudinary & API Key & 682229474789636 \\
+Google OAuth & Client ID & 1024296056000-rk7006r9ch3fjn85ou47tebu0fla9f8q \\ \bottomrule
+\end{tabular}
+\caption{Resumen de credenciales de servicios}
+\end{table}
+
+% ============================================
+% SECCIÓN 6: BASE DE DATOS
 % ============================================
 \section{Credenciales de Acceso a la Base de Datos}
 
@@ -516,7 +585,7 @@ Contraseña & \texttt{********} \\ \bottomrule
 \end{lstlisting}
 
 % ============================================
-% SECCIÓN 6: FUNCIONALIDAD IMPLEMENTADA
+% SECCIÓN 7: FUNCIONALIDAD IMPLEMENTADA
 % ============================================
 \section{Funcionalidad Implementada}
 
@@ -671,7 +740,7 @@ POST & /api/v1/reviews/geocode & Geocodificar dirección postal \\ \bottomrule
 \end{itemize}
 
 % ============================================
-% SECCIÓN 7: LIMITACIONES Y PROBLEMAS
+% SECCIÓN 8: LIMITACIONES Y PROBLEMAS
 % ============================================
 \section{Limitaciones y Problemas Encontrados}
 
@@ -727,7 +796,163 @@ POST & /api/v1/reviews/geocode & Geocodificar dirección postal \\ \bottomrule
 \end{enumerate}
 
 % ============================================
-% SECCIÓN 8: CONCLUSIONES
+% SECCIÓN 9: PROBLEMAS TÉCNICOS DETALLADOS
+% ============================================
+\section{Problemas Técnicos Detallados}
+
+En esta sección se documentan los problemas técnicos más significativos encontrados durante el desarrollo y despliegue de la aplicación.
+
+\subsection{Problema SSL con MongoDB Atlas en Entorno Local (Docker)}
+
+\subsubsection{Descripción del Problema}
+
+Al ejecutar la aplicación en contenedores Docker en entorno local, se producen errores intermitentes de conexión SSL con MongoDB Atlas:
+
+\begin{lstlisting}[caption=Error SSL en MongoDB Atlas]
+pymongo.errors.ServerSelectionTimeoutError: 
+SSL handshake failed: ac-nrmtowl-shard-00-01.n63md1g.mongodb.net:27017: 
+[SSL: UNEXPECTED_EOF_WHILE_READING] EOF occurred in violation of protocol 
+(_ssl.c:1016) (configured timeouts: socketTimeoutMS: 20000.0ms, 
+connectTimeoutMS: 20000.0ms)
+\end{lstlisting}
+
+\subsubsection{Causa del Problema}
+
+Este error se produce por una combinación de factores:
+
+\begin{enumerate}
+    \item \textbf{Configuración de red del contenedor}: Docker utiliza una capa de red virtualizada que puede interferir con las conexiones TLS de larga duración.
+    \item \textbf{Firewall/Antivirus}: Algunos antivirus o firewalls (como Windows Defender) inspeccionan el tráfico SSL, causando interrupciones.
+    \item \textbf{Timeout de conexiones idle}: MongoDB Atlas cierra conexiones inactivas, y si el driver no maneja bien la reconexión, se produce el error.
+    \item \textbf{Versión de OpenSSL en el contenedor}: Incompatibilidades entre la versión de OpenSSL del contenedor y el servidor de MongoDB Atlas.
+\end{enumerate}
+
+\subsubsection{Soluciones Implementadas}
+
+\begin{enumerate}
+    \item \textbf{Configuración de TLS en la URI de conexión}:
+    \begin{lstlisting}[language=Python]
+MONGO_URI=mongodb+srv://user:pass@cluster.mongodb.net/
+    ?retryWrites=true&w=majority&tls=true
+    &tlsAllowInvalidCertificates=false
+    \end{lstlisting}
+    
+    \item \textbf{Configuración de timeouts en Motor}:
+    \begin{lstlisting}[language=Python]
+client = AsyncIOMotorClient(
+    settings.MONGO_URI,
+    serverSelectionTimeoutMS=30000,
+    connectTimeoutMS=20000,
+    socketTimeoutMS=20000,
+    maxPoolSize=10,
+    minPoolSize=1
+)
+    \end{lstlisting}
+    
+    \item \textbf{Nota importante}: Este problema \textbf{no ocurre en producción} (Render), solo en el entorno local con Docker. En Render, la conexión a MongoDB Atlas funciona correctamente sin modificaciones adicionales.
+\end{enumerate}
+
+\subsection{Problema con el Servicio de Geocodificación Nominatim}
+
+\subsubsection{Descripción del Problema}
+
+Al intentar geocodificar direcciones desde el backend desplegado en Render, el servicio Nominatim (OpenStreetMap) falla constantemente con errores de conexión:
+
+\begin{lstlisting}[caption=Error de conexion con Nominatim]
+[Geocoding] Nominatim connection error: 
+All connection attempts failed
+\end{lstlisting}
+
+\subsubsection{Causa del Problema}
+
+\begin{enumerate}
+    \item \textbf{Bloqueo por IP de datacenter}: Nominatim tiene políticas estrictas de uso que pueden bloquear peticiones desde IPs de servicios cloud conocidos (AWS, Google Cloud, Render, etc.).
+    \item \textbf{Rate limiting}: Nominatim limita a 1 petición por segundo y requiere un User-Agent válido.
+    \item \textbf{Política de uso aceptable}: El servicio gratuito de Nominatim está pensado para uso ocasional, no para aplicaciones en producción con alto tráfico.
+\end{enumerate}
+
+\subsubsection{Soluciones Implementadas}
+
+Se implementó un sistema de \textbf{geocodificación en cascada} con múltiples proveedores de fallback:
+
+\begin{lstlisting}[language=Python, caption=Sistema de geocodificacion con fallbacks]
+class GeocodingService:
+    # Servicios en orden de prioridad
+    NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
+    PHOTON_URL = "https://photon.komoot.io/api/"
+    GEOCODE_MAPS_URL = "https://geocode.maps.co/search"
+    
+    async def get_coordinates(self, address: str):
+        # 1. Intentar Nominatim (OpenStreetMap oficial)
+        result = await self._try_nominatim(address)
+        if result: return result
+        
+        # 2. Intentar Photon (Komoot, basado en OSM)
+        result = await self._try_photon(address)
+        if result: return result
+        
+        # 3. Intentar Geocode.maps.co (alternativa gratuita)
+        result = await self._try_geocode_maps(address)
+        if result: return result
+        
+        # 4. Si todo falla, retornar None
+        return None
+\end{lstlisting}
+
+\subsubsection{Fallback de Coordenadas por Defecto}
+
+Como último recurso, si todos los servicios de geocodificación fallan, se asignan coordenadas por defecto (Málaga) y se notifica al usuario:
+
+\begin{lstlisting}[language=Python, caption=Coordenadas por defecto como fallback]
+DEFAULT_LATITUDE = 36.7213028   # Malaga, Espana
+DEFAULT_LONGITUDE = -4.4216366
+GEOCODING_WARNING = "No se pudo geocodificar la direccion. 
+                     Se han asignado coordenadas por defecto (Malaga)."
+
+@router.post("/geocode")
+async def geocode_address(address: str = Form(...)):
+    coords = await geocoding_service.get_coordinates(address)
+    
+    if coords:
+        return {"latitude": coords[0], "longitude": coords[1]}
+    else:
+        # Fallback: coordenadas de Malaga con advertencia
+        return {
+            "latitude": DEFAULT_LATITUDE,
+            "longitude": DEFAULT_LONGITUDE,
+            "warning": GEOCODING_WARNING,
+            "is_default": True
+        }
+\end{lstlisting}
+
+\subsubsection{Proveedores de Geocodificación Utilizados}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{@{}llll@{}}
+\toprule
+\textbf{Prioridad} & \textbf{Servicio} & \textbf{URL Base} & \textbf{Limitaciones} \\ \midrule
+1 & Nominatim & nominatim.openstreetmap.org & 1 req/s, bloqueo IPs cloud \\
+2 & Photon & photon.komoot.io & Sin límite documentado \\
+3 & Geocode.maps.co & geocode.maps.co & 1 req/s, sin API key \\
+4 & Default & -- & Málaga (36.72, -4.42) \\ \bottomrule
+\end{tabular}
+\caption{Proveedores de geocodificación en orden de prioridad}
+\end{table}
+
+\subsection{Recomendaciones para Producción}
+
+Para un entorno de producción real, se recomienda:
+
+\begin{enumerate}
+    \item \textbf{Usar un servicio de geocodificación de pago}: Google Maps Geocoding API, Mapbox, HERE, etc.
+    \item \textbf{Implementar caché de geocodificación}: Almacenar resultados en Redis o MongoDB para evitar peticiones repetidas.
+    \item \textbf{Usar MongoDB Atlas con plan de pago}: Mejor rendimiento y sin las limitaciones del tier gratuito.
+    \item \textbf{Configurar un proxy o VPN}: Para evitar bloqueos de IP en servicios gratuitos.
+\end{enumerate}
+
+% ============================================
+% SECCIÓN 10: CONCLUSIONES
 % ============================================
 \section{Conclusiones}
 

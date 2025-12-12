@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1765561529.13258 "c:/Users/Eduardo/Downloads/iweb-parcial-frontend-main/repo/iweb-p2/docs/memoria.tex" "memoria.pdf" "memoria" 1765561530.6626 2
+["pdflatex"] 1765563185.65729 "c:/Users/Eduardo/Downloads/iweb-parcial-frontend-main/repo/iweb-p2/docs/memoria.tex" "memoria.pdf" "memoria" 1765563186.93512 0
   "C:/Users/Eduardo/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1765561516 82011 97247c01f6bfb6f6d0c40fab12a08423 ""
   "C:/Users/Eduardo/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1200.pk" 1762969453 31952 3151ff325b7d87dfe4358f3284066135 ""
   "C:/Users/Eduardo/AppData/Local/MiKTeX/fonts/pk/ljfour/jknappen/ec/dpi600/ecbx1440.pk" 1762969452 40136 509a37d5fa80a37e928df95a8b617afe ""
@@ -115,11 +115,11 @@
   "C:/Users/Eduardo/AppData/Local/Programs/MiKTeX/tex/latex/tools/longtable.sty" 1700599895 12935 94a3291359b5f73ff1b19345a6983105 ""
   "C:/Users/Eduardo/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "C:/Users/Eduardo/AppData/Local/Programs/MiKTeX/tex/latex/xcolor/xcolor.sty" 1700127522 55487 80a65caedd3722f4c20a14a69e785d8f ""
-  "c:/Users/Eduardo/Downloads/iweb-parcial-frontend-main/repo/iweb-p2/docs/memoria.tex" 1765561480 28357 28dc198ad24c6847a6924854b8fb4971 ""
-  "memoria.aux" 1765561530 7976 092eca22222bd60d9dfa65ee1a9a8bbf "pdflatex"
-  "memoria.out" 1765561530 7827 a288ae53594f2b7c121d48565241cc26 "pdflatex"
-  "memoria.tex" 1765561480 28357 28dc198ad24c6847a6924854b8fb4971 ""
-  "memoria.toc" 1765561530 3916 9f517c8b7e1de46ce7c7b8b24a15405a "pdflatex"
+  "c:/Users/Eduardo/Downloads/iweb-parcial-frontend-main/repo/iweb-p2/docs/memoria.tex" 1765563183 37412 999da67c8dc32efbd923c2fb97c3660f ""
+  "memoria.aux" 1765563186 11410 002b7db19011d4954e0cb3565b792227 "pdflatex"
+  "memoria.out" 1765563186 11431 978d0aaed6baa98c33ebcd94cb3465bc "pdflatex"
+  "memoria.tex" 1765563183 37412 999da67c8dc32efbd923c2fb97c3660f ""
+  "memoria.toc" 1765563186 5552 ce1dd86c1bd1dd031d4034106787e6d1 "pdflatex"
   (generated)
   "memoria.aux"
   "memoria.log"

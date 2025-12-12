@@ -4,7 +4,7 @@ import L from 'leaflet';
 import { useState, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch, faSpinner, faMapMarkerAlt } from '@fortawesome/free-solid-svg-icons';
-import type { Review_Model } from '../../domain/models/Review';
+import type { Review_Model, Geocoding_Result } from '../../domain/models/Review';
 import { StarRating } from './StarRating';
 
 // Fix for default marker icon in Leaflet + React
@@ -30,7 +30,7 @@ interface MapComponentProps {
     /** Callback cuando se selecciona una reseña */
     on_review_select?: (review: Review_Model) => void;
     /** Función para geocodificar direcciones */
-    on_geocode?: (address: string) => Promise<{ latitude: number; longitude: number }>;
+    on_geocode?: (address: string) => Promise<Geocoding_Result>;
 }
 
 /**
