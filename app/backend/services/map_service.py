@@ -5,14 +5,14 @@ import asyncio
 class GeocodingService:
     """
     Servicio de geocodificación con múltiples proveedores.
-    Intenta en orden: Nominatim -> Photon -> OpenCage (si está configurado).
+    Intenta en orden: Nominatim -> Photon -> Geocode.maps.co -> Open-Meteo.
     """
     
     # Servicios de geocodificación gratuitos
     NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
     PHOTON_URL = "https://photon.komoot.io/api/"
-    # Alternativa adicional: API de Geocode.maps.co (gratuita, sin API key para bajo volumen)
     GEOCODE_MAPS_URL = "https://geocode.maps.co/search"
+    OPENMETEO_URL = "https://geocoding-api.open-meteo.com/v1/search"
     
     MAX_RETRIES = 2
     TIMEOUT_SECONDS = 15
@@ -97,6 +97,34 @@ class GeocodingService:
             print("[Geocoding] Geocode.maps.co: No results found")
         return None
 
+    async def _try_openmeteo(self, address: str, client: httpx.AsyncClient) -> tuple[float, float] | None:
+        """Intenta geocodificar usando Open-Meteo (cuarto fallback)."""
+        print(f"[Geocoding] Trying Open-Meteo for: {address}")
+        params = {
+            'name': address,
+            'count': 1,
+            'language': 'es',
+            'format': 'json'
+        }
+        headers = {
+            'User-Agent': 'ReViews-IWEB-Exam/1.0',
+            'Accept': 'application/json'
+        }
+        
+        response = await client.get(self.OPENMETEO_URL, params=params, headers=headers)
+        print(f"[Geocoding] Open-Meteo response status: {response.status_code}")
+        
+        if response.status_code == 200:
+            data = response.json()
+            results = data.get('results', [])
+            if results and len(results) > 0:
+                lat = float(results[0]['latitude'])
+                lon = float(results[0]['longitude'])
+                print(f"[Geocoding] Open-Meteo found: ({lat}, {lon})")
+                return lat, lon
+            print("[Geocoding] Open-Meteo: No results found")
+        return None
+
     async def _try_service(
         self, 
         service_name: str,
@@ -129,7 +157,7 @@ class GeocodingService:
     async def get_coordinates(self, address: str) -> tuple[float, float] | None:
         """
         Obtiene latitud y longitud a partir de una dirección.
-        Intenta múltiples servicios en cascada: Nominatim -> Photon -> Geocode.maps.co
+        Intenta múltiples servicios en cascada: Nominatim -> Photon -> Geocode.maps.co -> Open-Meteo
         
         :param address: Dirección en formato texto.
         :return: Tupla (lat, lng) o None si todos los servicios fallan.
@@ -141,6 +169,7 @@ class GeocodingService:
             ("Nominatim", self._try_nominatim),
             ("Photon", self._try_photon),
             ("Geocode.maps.co", self._try_geocode_maps),
+            ("Open-Meteo", self._try_openmeteo),
         ]
         
         # Crear cliente HTTP con configuración robusta

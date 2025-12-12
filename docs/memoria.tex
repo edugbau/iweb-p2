@@ -110,16 +110,15 @@ La aplicación \textbf{ReViews} ha sido desplegada en servicios cloud públicos,
 \begin{tabular}{@{}ll@{}}
 \toprule
 \textbf{Servicio} & \textbf{URL} \\ \midrule
-Frontend (Vercel) & \url{https://tu-app.vercel.app} \\
-Backend API (Render) & \url{https://tu-backend.onrender.com} \\
-Documentación Swagger & \url{https://tu-backend.onrender.com/docs} \\
-Documentación ReDoc & \url{https://tu-backend.onrender.com/redoc} \\
-OpenAPI JSON & \url{https://tu-backend.onrender.com/openapi.json} \\ \bottomrule
+Repositorio GitHub & \url{https://github.com/edugbau/iweb-p2} \\
+Frontend (Vercel) & \url{https://iweb-p2.vercel.app} \\
+Backend API (Render) & \url{https://iweb-p2.onrender.com} \\
+Documentación Swagger & \url{https://iweb-p2.onrender.com/docs} \\
+Documentación ReDoc & \url{https://iweb-p2.onrender.com/redoc} \\
+OpenAPI JSON & \url{https://iweb-p2.onrender.com/openapi.json} \\ \bottomrule
 \end{tabular}
 \caption{URLs de acceso a la aplicación desplegada}
 \end{table}
-
-\textit{Nota: Sustituir las URLs por las reales del despliegue.}
 
 \subsection{Consideraciones sobre Render (Plan Gratuito)}
 
@@ -362,31 +361,35 @@ app/backend/
 \subsubsection{Backend (\texttt{app/backend/.env})}
 
 \begin{lstlisting}[caption=Variables de entorno del Backend]
-# MongoDB Atlas
-MONGO_URI=mongodb+srv://usuario:password@cluster.mongodb.net/
-DATABASE_NAME=reviews_db
+# Configuracion del Servidor
+MONGO_URI=mongodb+srv://eduardo:eduardo@cluster0.n63md1g.mongodb.net/?appName=Cluster0
+DATABASE_NAME=plantilla
+API_NAME=IWEB Exam API
 
-# Cloudinary
-CLOUDINARY_CLOUD_NAME=tu_cloud_name
-CLOUDINARY_API_KEY=tu_api_key
-CLOUDINARY_API_SECRET=tu_api_secret
+# Cloudinary (Imagenes)
+CLOUDINARY_CLOUD_NAME=dhvhzdfwh
+CLOUDINARY_API_KEY=682229474789636
+CLOUDINARY_API_SECRET=4XDfe2qeDc63g-w6sh87OY4v96U
 
-# Google OAuth
-GOOGLE_CLIENT_ID=tu_client_id.apps.googleusercontent.com
-GOOGLE_CLIENT_SECRET=tu_client_secret
+# Google OAuth (Backend verifica el token)
+GOOGLE_CLIENT_ID=1024296056000-rk7006r9ch3fjn85ou47tebu0fla9f8q.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=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
 
-# JWT Secret (generar uno aleatorio y seguro)
-SECRET_KEY=una_clave_secreta_muy_larga_y_segura_de_al_menos_32_caracteres
+# JWT
+SECRET_KEY=secret_key_placeholder_change_me
+
+# Desarrollo local
+ALLOWED_ORIGINS=http://localhost:5173
 \end{lstlisting}
 
 \subsubsection{Frontend (\texttt{app/frontend/.env})}
 
 \begin{lstlisting}[caption=Variables de entorno del Frontend]
-# URL del Backend (para desarrollo local)
+# URL del Backend (Para Axios)
 VITE_API_URL=http://localhost:8000/api/v1
 
-# Google OAuth Client ID (el mismo que en backend)
-VITE_GOOGLE_CLIENT_ID=tu_client_id.apps.googleusercontent.com
+# Google OAuth (Para el boton de login en React)
+VITE_GOOGLE_CLIENT_ID=1024296056000-rk7006r9ch3fjn85ou47tebu0fla9f8q.apps.googleusercontent.com
 \end{lstlisting}
 
 \subsection{Ejecución en Local (con Docker)}
@@ -550,12 +553,12 @@ Para verificar el contenido de la base de datos MongoDB Atlas:
 \toprule
 \textbf{Parámetro} & \textbf{Valor} \\ \midrule
 Proveedor & MongoDB Atlas \\
-Clúster & cluster0 \\
-Base de datos & \texttt{reviews\_db} \\
+Clúster & cluster0.n63md1g.mongodb.net \\
+Base de datos & \texttt{plantilla} \\
 Colección principal & \texttt{reviews} \\
-URI de conexión & \texttt{mongodb+srv://...} \\
-Usuario de solo lectura & \texttt{readonly\_user} \\
-Contraseña & \texttt{********} \\ \bottomrule
+URI de conexión & \texttt{mongodb+srv://eduardo:eduardo@cluster0.n63md1g.mongodb.net/} \\
+Usuario & \texttt{eduardo} \\
+Contraseña & \texttt{eduardo} \\ \bottomrule
 \end{tabular}
 \caption{Credenciales de MongoDB Atlas}
 \end{table}
@@ -881,6 +884,7 @@ class GeocodingService:
     NOMINATIM_URL = "https://nominatim.openstreetmap.org/search"
     PHOTON_URL = "https://photon.komoot.io/api/"
     GEOCODE_MAPS_URL = "https://geocode.maps.co/search"
+    OPENMETEO_URL = "https://geocoding-api.open-meteo.com/v1/search"
     
     async def get_coordinates(self, address: str):
         # 1. Intentar Nominatim (OpenStreetMap oficial)
@@ -895,7 +899,11 @@ class GeocodingService:
         result = await self._try_geocode_maps(address)
         if result: return result
         
-        # 4. Si todo falla, retornar None
+        # 4. Intentar Open-Meteo (sin limites)
+        result = await self._try_openmeteo(address)
+        if result: return result
+        
+        # 5. Si todo falla, retornar None
         return None
 \end{lstlisting}
 
@@ -933,11 +941,12 @@ async def geocode_address(address: str = Form(...)):
 \toprule
 \textbf{Prioridad} & \textbf{Servicio} & \textbf{URL Base} & \textbf{Limitaciones} \\ \midrule
 1 & Nominatim & nominatim.openstreetmap.org & 1 req/s, bloqueo IPs cloud \\
-2 & Photon & photon.komoot.io & Sin límite documentado \\
+2 & Photon & photon.komoot.io & Sin limite documentado \\
 3 & Geocode.maps.co & geocode.maps.co & 1 req/s, sin API key \\
-4 & Default & -- & Málaga (36.72, -4.42) \\ \bottomrule
+4 & Open-Meteo & geocoding-api.open-meteo.com & Sin limite, gratuito \\
+5 & Default & -- & Malaga (36.72, -4.42) \\ \bottomrule
 \end{tabular}
-\caption{Proveedores de geocodificación en orden de prioridad}
+\caption{Proveedores de geocodificacion en orden de prioridad}
 \end{table}
 
 \subsection{Recomendaciones para Producción}
