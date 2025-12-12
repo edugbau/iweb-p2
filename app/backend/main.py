@@ -5,8 +5,10 @@ from core.config import settings
 from core.database import db
 
 # Configuración de metadatos para OpenAPI
+# redirect_slashes=False evita los 307 Temporary Redirect
 app = FastAPI(
     title="ReViews API",
+    redirect_slashes=False,
     description="""
     API REST para la aplicación ReViews - Sistema de reseñas de establecimientos.
     

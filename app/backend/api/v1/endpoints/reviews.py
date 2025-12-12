@@ -15,7 +15,7 @@ router = APIRouter()
 
 
 @router.get(
-    "/",
+    "",
     response_model=list[ReviewSummary],
     status_code=status.HTTP_200_OK,
     summary="Listar todas las reseñas",
@@ -102,7 +102,7 @@ async def get_review(
 
 
 @router.post(
-    "/",
+    "",
     response_model=ReviewResponse,
     status_code=status.HTTP_201_CREATED,
     summary="Crear nueva reseña",
