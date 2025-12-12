@@ -185,13 +185,23 @@ class GeocodingResponse(BaseModel):
     latitude: float = Field(..., description="Latitud encontrada")
     longitude: float = Field(..., description="Longitud encontrada")
     display_name: str | None = Field(None, description="Nombre completo de la dirección")
+    warning: str | None = Field(
+        None, 
+        description="Mensaje de advertencia si se usaron coordenadas por defecto"
+    )
+    is_default: bool = Field(
+        False,
+        description="Indica si las coordenadas son por defecto (fallback)"
+    )
     
     model_config = ConfigDict(
         json_schema_extra={
             "example": {
                 "latitude": 36.7220033,
                 "longitude": -4.4189788,
-                "display_name": "Calle Granada, 46, Centro Histórico, Málaga, Andalucía, España"
+                "display_name": "Calle Granada, 46, Centro Histórico, Málaga, Andalucía, España",
+                "warning": None,
+                "is_default": False
             }
         }
     )

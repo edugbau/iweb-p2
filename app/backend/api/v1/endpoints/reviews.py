@@ -214,13 +214,14 @@ async def create_review(
     
     # 2. Geocoding with OpenStreetMap
     coordinates = await geocoding_service.get_coordinates(address)
-    lat, lng = coordinates if coordinates else (None, None)
     
-    if lat is None:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Dirección no encontrada. Verifica que sea una dirección válida."
-        )
+    if coordinates:
+        lat, lng = coordinates
+        print(f"Geocoding success for review: {address} -> ({lat}, {lng})")
+    else:
+        # Usar coordenadas por defecto cuando falla el geocoding
+        lat, lng = DEFAULT_LATITUDE, DEFAULT_LONGITUDE
+        print(f"Using default coordinates for review: {address} -> ({lat}, {lng})")
     
     # 3. Create Review Model
     review_data = ReviewModel(
@@ -301,20 +302,26 @@ async def delete_review(
     await review_repository.delete(review_id)
 
 
+# Coordenadas por defecto (Málaga, España) cuando falla el geocoding
+DEFAULT_LATITUDE = 36.7213028
+DEFAULT_LONGITUDE = -4.4216366
+GEOCODING_WARNING = (
+    "⚠️ No se pudo geocodificar la dirección (incompatibilidad con el servicio de hosting Render). "
+    "Se han asignado coordenadas por defecto (Málaga, España). "
+    "Las coordenadas reales se podrán obtener en un entorno de producción diferente."
+)
+
+
 @router.post(
     "/geocode",
     response_model=GeocodingResponse,
     status_code=status.HTTP_200_OK,
     summary="Geocodificar dirección",
-    description="Obtiene las coordenadas GPS de una dirección postal.",
+    description="Obtiene las coordenadas GPS de una dirección postal. Si falla, devuelve coordenadas por defecto.",
     responses={
         200: {
-            "description": "Coordenadas obtenidas exitosamente",
+            "description": "Coordenadas obtenidas exitosamente (o por defecto si falla)",
             "model": GeocodingResponse
-        },
-        404: {
-            "description": "Dirección no encontrada",
-            "model": ErrorResponse
         }
     }
 )
@@ -324,23 +331,30 @@ async def geocode_address(
 ):
     """
     Geocodifica una dirección postal y devuelve sus coordenadas.
+    Si el servicio de geocodificación falla, devuelve coordenadas por defecto.
     
     :param address: Dirección a geocodificar.
     :param geocoding_service: Servicio de geocodificación inyectado.
-    :return: Coordenadas de la dirección.
-    :raises HTTPException: Si la dirección no se encuentra.
+    :return: Coordenadas de la dirección (reales o por defecto).
     """
     coordinates = await geocoding_service.get_coordinates(address)
     
     if not coordinates:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Dirección no encontrada"
+        # Usar coordenadas por defecto cuando falla el geocoding
+        print(f"Using default coordinates for: {address}")
+        return GeocodingResponse(
+            latitude=DEFAULT_LATITUDE,
+            longitude=DEFAULT_LONGITUDE,
+            display_name=address,
+            warning=GEOCODING_WARNING,
+            is_default=True
         )
     
     lat, lng = coordinates
     return GeocodingResponse(
         latitude=lat,
         longitude=lng,
-        display_name=address
+        display_name=address,
+        warning=None,
+        is_default=False
     )

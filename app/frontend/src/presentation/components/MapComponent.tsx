@@ -64,6 +64,7 @@ export const MapComponent = ({
     const [search_address, set_search_address] = useState('');
     const [is_searching, set_is_searching] = useState(false);
     const [search_error, set_search_error] = useState<string | null>(null);
+    const [search_warning, set_search_warning] = useState<string | null>(null);
     const [map_center, set_map_center] = useState<[number, number] | null>(null);
     const [search_marker, set_search_marker] = useState<[number, number] | null>(null);
 
@@ -78,12 +79,18 @@ export const MapComponent = ({
         
         set_is_searching(true);
         set_search_error(null);
+        set_search_warning(null);
         
         try {
             const result = await on_geocode(search_address);
             const new_center: [number, number] = [result.latitude, result.longitude];
             set_map_center(new_center);
             set_search_marker(new_center);
+            
+            // Mostrar warning si se usaron coordenadas por defecto
+            if (result.warning || result.is_default) {
+                set_search_warning(result.warning || 'Se usaron coordenadas por defecto debido a un problema con el servicio de geocodificación.');
+            }
         } catch (error: any) {
             set_search_error(error.response?.data?.detail || 'Dirección no encontrada');
             set_search_marker(null);
@@ -133,6 +140,12 @@ export const MapComponent = ({
                     {search_error && (
                         <div className="mt-2 p-3 bg-red-50/95 backdrop-blur-sm border border-red-200 rounded-xl text-red-700 text-sm">
                             {search_error}
+                        </div>
+                    )}
+                    
+                    {search_warning && (
+                        <div className="mt-2 p-3 bg-amber-50/95 backdrop-blur-sm border border-amber-200 rounded-xl text-amber-700 text-sm">
+                            <span className="font-semibold">⚠️ Aviso:</span> {search_warning}
                         </div>
                     )}
                 </div>

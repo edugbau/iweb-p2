@@ -54,4 +54,8 @@ export interface Geocoding_Result {
     longitude: number;
     /** Nombre completo de la dirección */
     display_name?: string;
+    /** Mensaje de advertencia si se usaron coordenadas por defecto */
+    warning?: string;
+    /** Indica si las coordenadas son por defecto (fallback) */
+    is_default?: boolean;
 }
