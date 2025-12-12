@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import type { Review_Model } from '../../domain/models/Review';
+import type { Review_Model, Geocoding_Result } from '../../domain/models/Review';
 import { Http_Review_Repository } from '../../infrastructure/repositories/HttpReviewRepository';
 
 const review_repository = new Http_Review_Repository();
@@ -69,7 +69,7 @@ export const use_reviews = () => {
      * @param address Dirección a geocodificar.
      * @returns Coordenadas de la dirección.
      */
-    const geocode_address = async (address: string) => {
+    const geocode_address = async (address: string): Promise<Geocoding_Result> => {
         return await review_repository.geocode(address);
     };
 
